@@ -1,14 +1,11 @@
-import Sidebar from '../components/Sidebar'
-import Navbar from '../components/Navbar'
-import Charts from '../components/Charts'
-import Games from '../components/Games'
+import GamesList from '../components/GamesList'
 
 export default function Home() {
   return (
     <>
-    <div className="flex">
-    <main className="flex-grow ml-64 relative">
-          <Games />
+    <div >
+    <main className="flex flex-row">
+          <GamesList />
     </main>
     </div>
     </>

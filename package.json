@@ -9,13 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.18",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.6",
+    "@mui/x-data-grid": "^6.18.2",
     "@nextui-org/card": "^2.0.24",
     "@nextui-org/react": "^2.2.9",
+    "chart.js": "^4.4.0",
     "framer-motion": "^10.16.5",
     "next": "14.0.3",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
-    "recharts": "^2.10.1"
+    "recharts": "^2.10.1",
+    "styled-components": "^6.1.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
