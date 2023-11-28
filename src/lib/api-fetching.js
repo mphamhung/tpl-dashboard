@@ -48,6 +48,32 @@ export async function getScore(gameId) {
 }
   
 
-export async function getGameEventsForPlayer(gameId, teamId) {
-  return null
+export async function getAllGameEvents() {
+  const games = await getGames()
+
+  var flattened_games = []
+  for (const game of games) {
+    flattened_games.push({gameId: game.id, teamId: game.awayTeamId})
+    flattened_games.push({gameId: game.id, teamId: game.homeTeamId})
+  }
+
+  var events = await Promise.all(flattened_games.map( async ({gameId, teamId}) => {
+    return getGameEvents(gameId, teamId)
+  }))
+
+  return events.flat(1)
+}
+
+
+export async function getPlayerGameEvents(playerId) {
+  const allEvents = await getAllGameEvents()
+
+  var games_played = new Set()
+  allEvents.map(event=>{
+    if (event.player.id == playerId) {
+      games_played.add(event.gameId)}
+    }
+    )
+  const playerEvents = allEvents.filter(event => games_played.has(event.gameId))
+  return playerEvents
 }

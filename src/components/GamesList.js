@@ -24,10 +24,7 @@ export default async function GamesList() {
             games_by_date[game.date] = []
         }
         games_by_date[game.date].push(game.id)
-
     }
-
-
 
     for (const game of games) {
         games_by_id[game.id]= game

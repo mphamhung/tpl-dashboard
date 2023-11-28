@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 const columns = [
-    "Name",
+    "Game Id",
     "Goal",
     'Assist',
     '2nd Assist',
@@ -17,8 +17,9 @@ const columns = [
     'Drop',
     "",
 ]
+
 export default function StatTable({rows}) {
-    rows.sort(function(a, b){return a[""]- b[""] }).reverse()
+    rows.sort(function(a, b){return a["Game Id"]- b["Game Id"] }).reverse()
 
     return (
         <TableContainer component={Paper}>
@@ -26,7 +27,7 @@ export default function StatTable({rows}) {
           <TableHead>
             <TableRow>
                 {columns.map(key=> {
-                    if (key == "Name") {
+                    if (key == "Game Id") {
                         return <TableCell key={key}>{key}</TableCell>
                     }
                     else if (key == ""){

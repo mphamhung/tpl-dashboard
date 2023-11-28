@@ -1,5 +1,5 @@
 import {getGameEvents} from '@/lib/api-fetching'
-import gameEventSequenceToSummaryDict from "@/lib/transforms"
+import gameEventSequenceToSummaryDict from "@/lib/transforms/GameEventSequenceToSummaryDict"
 
 import StatTable from '@/components/StatTable'
 import {BarContributions, ScatterContributions} from '@/components/Contributions'
