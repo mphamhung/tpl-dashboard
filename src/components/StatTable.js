@@ -1,7 +1,4 @@
-import {getGameEvents} from '../lib/api-fetching'
-import { useState, useEffect } from 'react'
-import gameEventSequenceToSummaryDict from "../lib/transforms"
-
+'use client'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';

@@ -1,3 +1,4 @@
+'use client'
 import { Bar , Scatter} from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -10,15 +11,15 @@ import {
     Legend,
   } from 'chart.js';
 
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    PointElement,
-    Title,
-    Tooltip,
-    Legend
-  );
+ChartJS.register(
+CategoryScale,
+LinearScale,
+BarElement,
+PointElement,
+Title,
+Tooltip,
+Legend
+);
 
   
 export function BarContributions({rows}) {

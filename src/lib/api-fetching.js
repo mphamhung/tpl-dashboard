@@ -47,3 +47,7 @@ export async function getScore(gameId) {
   return res.json()
 }
   
+
+export async function getGameEventsForPlayer(gameId, teamId) {
+  return null
+}
