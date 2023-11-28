@@ -8,12 +8,11 @@ export default async function Page({params}) {
     const events = await getGameEvents(params.gameId, params.teamId);
     const statSummaryDict = gameEventSequenceToSummaryDict(events)
     const rows = Object.keys(statSummaryDict).map(playerId => statSummaryDict[playerId])
-
     return (
-      <>
+      <section>
         <StatTable rows={rows} />
         <BarContributions rows={rows} />
         <ScatterContributions rows={rows} />
-      </>
+      </section>
     )
 }
