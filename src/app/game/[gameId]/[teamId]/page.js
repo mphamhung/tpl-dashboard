@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import gameEventSequenceToSummaryDict from "@/lib/transforms"
 
 import StatTable from '@/components/StatTable'
-import Contributions from '@/components/Contributions'
+import {BarContributions, ScatterContributions} from '@/components/Contributions'
 
 export default function Page({params}) {
     const [rows, setRows] = useState(null)
@@ -22,7 +22,8 @@ export default function Page({params}) {
         rows&&
       <>
         <StatTable rows={rows} />
-        <Contributions rows={rows} />
+        <BarContributions rows={rows} />
+        <ScatterContributions rows={rows} />
       </>
     )
 }

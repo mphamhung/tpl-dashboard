@@ -1,12 +1,10 @@
-import React, { useState, useEffect} from "react";
-import { Bar } from 'react-chartjs-2';
-import {getGameEvents} from '../lib/api-fetching'
-import gameEventSequenceToSummaryDict from "../lib/transforms"
+import { Bar , Scatter} from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     CategoryScale,
     LinearScale,
     BarElement,
+    PointElement,
     Title,
     Tooltip,
     Legend,
@@ -16,13 +14,14 @@ import {
     CategoryScale,
     LinearScale,
     BarElement,
+    PointElement,
     Title,
     Tooltip,
     Legend
   );
 
   
-export default function Contributions({rows}) {
+export function BarContributions({rows}) {
     rows.sort(function(a, b){return a["% T"]+a["% GC"] - b["% T"] - b["% GC"]}).reverse()
     const labels = rows.map(row => {
         return row['Name']
@@ -45,6 +44,37 @@ export default function Contributions({rows}) {
     return(
         <Bar data={data} />
     )
+}
 
-    
+  
+export function ScatterContributions({rows}) {
+    rows.sort(function(a, b){return a["% T"]+a["% GC"] - b["% T"] - b["% GC"]}).reverse()
+    const labels = rows.map(row => {
+        return row['Name']
+    })
+
+    const options = {
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      };
+
+    const data = {
+        labels: labels,
+        datasets: [
+            {
+            label: '% GC vs % Touches',
+            data: rows.map(row => {
+                return {x: row["% T"], y: row["% GC"]}
+            }),
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            pointRadius: 10,
+            },
+        ],
+        };
+    return(
+        <Scatter data={data} options={options} />
+    )
 }
