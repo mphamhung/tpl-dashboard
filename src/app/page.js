@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <>
     <div >
-    <main className="flex flex-row">
+    <main className="flex flex-row flex-grow">
           <GamesList />
     </main>
     </div>

@@ -19,7 +19,7 @@ const columns = [
 ]
 export default function StatTable({rows}) {
     rows.sort(function(a, b){return a[""]- b[""] }).reverse()
-
+    
     return (
         <TableContainer component={Paper}>
         <Table size="small" aria-label="customized table">
