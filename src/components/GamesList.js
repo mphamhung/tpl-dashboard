@@ -3,8 +3,14 @@ import {getGames} from '../lib/api-fetching'
 
 
 const GameCard = ({id, teamId, teamName}) => (
-    <Link key={id} href={{pathname:`/game/${id}/${teamId}`}} className='basis-1/2 h-12 bg-gray-700 rounded grid justify-items-center hover:bg-gray-500'>
-        {teamName}   
+    <Link key={id+teamId} href={{pathname:`/game/${id}/${teamId}`}} 
+    className='basis-1/2 h-12 bg-gray-700 rounded grid hover:bg-gray-500'
+    justify="center"
+    >
+        <div className='m-1 text-sm overflow-hidden'>
+            {teamName}   
+
+        </div>
     </Link>
   );
 

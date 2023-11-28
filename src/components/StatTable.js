@@ -21,9 +21,11 @@ const columns = [
     "",
 ]
 export default function StatTable({rows}) {
+    rows.sort(function(a, b){return a[""]- b[""] }).reverse()
+
     return (
         <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} size="small" aria-label="customized table">
+        <Table size="small" aria-label="customized table">
           <TableHead>
             <TableRow>
                 {columns.map(key=> {
@@ -31,10 +33,10 @@ export default function StatTable({rows}) {
                         return <TableCell key={key}>{key}</TableCell>
                     }
                     else if (key == ""){
-                       return <TableCell key={key} align='left' style={{width: "10%"}} >Passes</TableCell>
+                       return <TableCell key={key} align='left' style={{padding: "5px"}} >Passes</TableCell>
                     }
                     else{
-                        return <TableCell key={key} align='left' style={{width: "10%"}} >{key}</TableCell>
+                        return <TableCell key={key} align='left' style={{padding: "5px"}} >{key}</TableCell>
                     }
                 })}
             </TableRow>
@@ -43,7 +45,7 @@ export default function StatTable({rows}) {
             {rows && rows.map((row) => (
               <TableRow className="hover:bg-gray-200" key={row["Name"]}>
                 {columns.map(key => {
-                    return <TableCell key={key} align="left" >{row[key]}</TableCell>
+                    return <TableCell key={key}  align="left" >{row[key]}</TableCell>
                 })}
               </TableRow>
             ))}
