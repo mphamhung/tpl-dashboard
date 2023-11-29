@@ -11,6 +11,7 @@ import {
     Legend,
   } from 'chart.js';
 
+  import React from 'react';
 ChartJS.register(
 CategoryScale,
 LinearScale,
@@ -21,8 +22,17 @@ Tooltip,
 Legend
 );
 
+
   
 export function BarContributions({rows}) {
+    const [hydrated, setHydrated] = React.useState(false);
+    React.useEffect(() => {
+        setHydrated(true);
+    }, []);
+    if (!hydrated) {
+        // Returns null on first render, so the client and server match
+        return null;
+    }
     rows.sort(function(a, b){return a["% T"]+a["% GC"] - b["% T"] - b["% GC"]}).reverse()
     const labels = rows.map(row => {
         return row['Name']
@@ -49,6 +59,15 @@ export function BarContributions({rows}) {
 
   
 export function ScatterContributions({rows}) {
+    const [hydrated, setHydrated] = React.useState(false);
+    React.useEffect(() => {
+        setHydrated(true);
+    }, []);
+    if (!hydrated) {
+        // Returns null on first render, so the client and server match
+        return null;
+    }
+    
     rows.sort(function(a, b){return a["% T"]+a["% GC"] - b["% T"] - b["% GC"]}).reverse()
     const labels = rows.map(row => {
         return row['Name']

@@ -1,7 +1,8 @@
 import {getPlayerGameEvents} from '@/lib/api-fetching'
 import gamePlayerEventSequenceToSummaryDict from "@/lib/transforms/GamePlayerEventSequenceToSummaryDict"
-import StatTable from '@/components/PlayerStatTable'
+import StatTable from '@/components/StatTable'
 import { ScatterContributions} from '@/components/Contributions'
+
 
 export default async function Page({params}) {
     const gameEvents = await getPlayerGameEvents(params.playerId);
@@ -12,9 +13,19 @@ export default async function Page({params}) {
       return temp_dict
     })
     
+    const columns = [
+      "Game Id",
+      "Goal",
+      'Assist',
+      '2nd Assist',
+      'D',
+      'TA',
+      'Drop',
+      "",
+    ]
     return (
       <>
-      <StatTable rows={playerStats}/>
+      <StatTable rows={playerStats} columns={columns}/>
       <ScatterContributions rows={playerStats}/>
       </>
     )

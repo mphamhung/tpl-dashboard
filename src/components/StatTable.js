@@ -6,18 +6,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import React
+ from 'react';
 
-const columns = [
-    "Name",
-    "Goal",
-    'Assist',
-    '2nd Assist',
-    'D',
-    'TA',
-    'Drop',
-    "",
-]
-export default function StatTable({rows}) {
+export default function StatTable({rows , columns}) {
+    const [hydrated, setHydrated] = React.useState(false);
+    React.useEffect(() => {
+        setHydrated(true);
+    }, []);
+    if (!hydrated) {
+        // Returns null on first render, so the client and server match
+        return null;
+    }
     rows.sort(function(a, b){return a[""]- b[""] }).reverse()
     
     return (
