@@ -11,15 +11,22 @@ import React
 
 export default function StatTable({rows , columns}) {
     const [hydrated, setHydrated] = React.useState(false);
+    const [sortKey, setSortKey] = React.useState("")
+    const [reverse, setReverse] = React.useState(false)
+
     React.useEffect(() => {
         setHydrated(true);
     }, []);
+
     if (!hydrated) {
         // Returns null on first render, so the client and server match
         return null;
     }
-    rows.sort(function(a, b){return a[""]- b[""] }).reverse()
-    
+    rows.sort(function(a, b){return a[sortKey]- b[sortKey]})
+    if (reverse) {
+      rows.reverse()
+    }
+    console.log(sortKey)
     return (
         <TableContainer component={Paper}>
         <Table size="small" aria-label="customized table">
@@ -27,13 +34,13 @@ export default function StatTable({rows , columns}) {
             <TableRow>
                 {columns.map(key=> {
                     if (key == "Name") {
-                        return <TableCell key={key}>{key}</TableCell>
+                        return <TableCell key={key} onClick={ _ => {setSortKey(key);setReverse(!reverse);}}>{key}</TableCell>
                     }
                     else if (key == ""){
-                       return <TableCell key={key} align='left' style={{padding: "5px"}} >Passes</TableCell>
+                       return <TableCell key={key} align='left' style={{padding: "5px"}} onClick={ _ => {setSortKey(key);setReverse(!reverse);}}>Passes</TableCell>
                     }
                     else{
-                        return <TableCell key={key} align='left' style={{padding: "5px"}} >{key}</TableCell>
+                        return <TableCell key={key} align='left' style={{padding: "5px"}} onClick={ _ => {setSortKey(key);setReverse(!reverse);}}>{key}</TableCell>
                     }
                 })}
             </TableRow>
