@@ -34,17 +34,15 @@ export async function getGameEvents(gameId, teamId) {
     return events
   }
 
-export async function getScore(gameId) {
-  const res = await fetch(serverUrl+'gameEvents/'+gameId+"/"+teamId)
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
- 
-  if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch data')
-  }
+export async function getGameEventsByGameId(gameId) {
+  const games = await getGames()
 
-  return res.json()
+  const g = games.find(game => game['id'] === gameId)
+
+  const homeTeamEvents = await getGameEvents(g.id, g.homeTeamId)
+  const awayTeamEvents = await getGameEvents(g.id, g.awayTeamId)
+
+  return [homeTeamEvents, awayTeamEvents]
 }
   
 

@@ -54,6 +54,11 @@ export default function StatTable({rows , columns}) {
                         {row[key]}
                         </a></TableCell>
                     }
+                    else if (key == "gameId") {
+                      return <TableCell key={key}  align="left" ><a href={"/game/"+row["gameId"]}>
+                        {row[key]}
+                        </a></TableCell>
+                    }
                     else {
                       return <TableCell key={key}  align="left" >{row[key]}</TableCell>
                     }

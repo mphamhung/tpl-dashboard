@@ -16,9 +16,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <NavigationBar></NavigationBar>
+        <section className='mx-[2%]'>
         <Suspense fallback={<p>Loading...</p>}>
-        {children}
+          {children}
         </Suspense>
+        </section>
      </body>
     </html>
   )

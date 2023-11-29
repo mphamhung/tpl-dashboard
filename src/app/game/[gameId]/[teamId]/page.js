@@ -8,7 +8,7 @@ import { Suspense } from 'react';
 
 export default async function Page({params}) {
     const events = await getGameEvents(params.gameId, params.teamId);
-    const rows = preprocess(events, (d) => true)
+    const [rows, _] = preprocess(events, (d) => true)
     const columns = [
       "Name",
       "Goal",

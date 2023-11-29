@@ -1,4 +1,4 @@
-import { tidy, mutate, groupBy,summarize, sum, filter} from '@tidyjs/tidy'
+import { tidy, mutate, groupBy,summarize, sum, filter, last} from '@tidyjs/tidy'
 
 function gameEventSequenceToRows(game_events_sequence) {
     var stats_summary = {}
@@ -32,6 +32,7 @@ function gameEventSequenceToRows(game_events_sequence) {
     })
     return data
 }
+
 export default function preprocess(game_events_sequence, filter_func) {
     var rows = gameEventSequenceToRows(game_events_sequence)
 
@@ -58,5 +59,28 @@ export default function preprocess(game_events_sequence, filter_func) {
         rows, filter(filter_func)
     )
 
-    return rows
+
+    var graph = {}
+
+    var last_sequence_num = 0
+    var last_playerId = null
+
+    for (const event of game_events_sequence) {
+        if (event.sequence < last_sequence_num) {
+            last_playerId = null
+            continue
+        }
+        if (last_playerId !== null) {
+            if (!(last_playerId in graph)) {
+                graph[last_playerId] = {}
+            }
+            if (!(event.player.id in graph[last_playerId])) {
+                graph[last_playerId][event.player.id] = 0
+            }
+            graph[last_playerId][event.player.id] += 1
+        }
+        last_playerId = event.player.id
+    }
+
+    return [rows, graph]
 }

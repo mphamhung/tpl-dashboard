@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import {getGames} from '../lib/api-fetching'
+import ScoreCard from './ScoreCard';
 
 
 const GameCard = ({id, teamId, teamName}) => (
@@ -9,7 +10,6 @@ const GameCard = ({id, teamId, teamName}) => (
     >
         <div className='m-1 text-sm overflow-hidden'>
             {teamName}   
-
         </div>
     </Link>
   );
@@ -36,8 +36,9 @@ export default async function GamesList() {
                 const game = games_by_id[gameId]
                 return (
                     <section key={gameId} className='flex flex-row m-2 space-x-4'>
-                        <GameCard  id={game.id} teamId={game.awayTeamId} teamName={game.awayTeam}/> 
-                        <GameCard  id={game.id} teamId={game.homeTeamId} teamName={game.homeTeam}/>
+                        <GameCard  id={game.id} teamId={game.homeTeamId} teamName={game.homeTeam}/> 
+                        <ScoreCard game={game}/>
+                        <GameCard  id={game.id} teamId={game.awayTeamId} teamName={game.awayTeam}/>
                      </section>
                 ) 
             })}

@@ -2,13 +2,14 @@ import {getPlayerGameEvents} from '@/lib/api-fetching'
 import StatTable from '@/components/StatTable'
 import { ScatterContributions} from '@/components/Contributions'
 import preprocess from '@/lib/preprocess'
-import { tidy, first} from '@tidyjs/tidy'
+import { tidy, first ,mutate} from '@tidyjs/tidy'
 
 
 export default async function Page({params}) {
     const gameEvents = await getPlayerGameEvents(params.playerId);
-    const rows = preprocess(gameEvents, (d) => d.playerId == params.playerId)
+    var [rows, graph] = preprocess(gameEvents, (d) => d.playerId == params.playerId)
     const playerName = tidy(rows,first("Name"))
+
     const columns = [
       "gameId",
       "Goal",
@@ -19,6 +20,7 @@ export default async function Page({params}) {
       'Drop',
       "",
       "% pass",
+      "person",
     ]
     return (
       <>

@@ -7,7 +7,7 @@ import { tidy, mutate, groupBy,summarize, sum, first, nDistinct} from '@tidyjs/t
 
 export default async function Page() {
     const gameEvents = await getAllGameEvents();
-    var rows = preprocess(gameEvents, (d) => true)
+    var [rows, _] = preprocess(gameEvents, (d) => true)
     rows = tidy(
       rows,
       groupBy('playerId' , [
@@ -42,6 +42,7 @@ export default async function Page() {
     
     return (
       <>
+        <h1> Rankings </h1>
         <StatTable rows={rows} columns={columns}/>
       </>
     )
