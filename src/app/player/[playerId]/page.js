@@ -22,6 +22,7 @@ export default async function Page({params}) {
       'TA',
       'Drop',
       "",
+      "% Pass",
     ]
     return (
       <>

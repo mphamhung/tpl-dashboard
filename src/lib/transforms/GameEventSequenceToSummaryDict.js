@@ -29,5 +29,11 @@ export default function gameEventSequenceToSummaryDict(game_events_sequence) {
         stats_summary[playerId]["% GC"] = (stats_summary[playerId]['gc']/GC_sum)*100
         stats_summary[playerId]["% T"] = (stats_summary[playerId]['']/touches_sum) * 100
     })
+    Object.keys(stats_summary).map(playerId => {
+        stats_summary[playerId]["% Pass"] = (1-(stats_summary[playerId]['TA']/ (stats_summary[playerId][''] + 
+                                        stats_summary[playerId]['Assist'] +
+                                        stats_summary[playerId]['2nd Assist'] +
+                                        stats_summary[playerId]['TA'] ))).toFixed(2)
+    })
     return stats_summary
 }

@@ -10,6 +10,7 @@ const columns = [
   'TA',
   'Drop',
   "",
+  "% Pass",
 ]
 export default async function Page() {
     const gameEvents = await getAllGameEvents();
