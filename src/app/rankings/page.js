@@ -1,6 +1,9 @@
 import {getAllGameEvents} from '@/lib/api-fetching'
-import gameEventSequenceToSummaryDict from "@/lib/transforms/GameEventSequenceToSummaryDict"
+import preprocess from '@/lib/preprocess'
 import StatTable from '@/components/StatTable'
+
+import { tidy, mutate, groupBy,summarize, sum, first} from '@tidyjs/tidy'
+
 const columns = [
   "Name",
   "Goal",
@@ -10,12 +13,29 @@ const columns = [
   'TA',
   'Drop',
   "",
-  "% Pass",
+  "% pass",
 ]
 export default async function Page() {
     const gameEvents = await getAllGameEvents();
-    const playerStats = gameEventSequenceToSummaryDict(gameEvents)
-    const rows = Object.keys(playerStats).map(playerId => playerStats[playerId])
+    var rows = preprocess(gameEvents, (d) => true)
+    rows = tidy(
+      rows,
+      groupBy('playerId' , [
+        summarize({
+          "Name": first("Name"),
+          'Goal': sum("Goal"), 
+          'Assist': sum("Assist"), 
+          '2nd Assist': sum("2nd Assist'"), 
+          'D': sum("D"), 
+          'TA': sum("TA"), 
+          'Drop': sum("Drop"), 
+          '': sum(""), 
+        })
+      ]),
+      mutate({ "GC": d => d["Goal"] + d["Assist"] + d["2nd Assist"],
+      "% pass": d => (1- (d["TA"] / ( d["TA"] +d[""] +d["Assist"] + d["2nd Assist"] ) )).toFixed(2) }),
+    )
+    
     return (
       <>
         <StatTable rows={rows} columns={columns}/>

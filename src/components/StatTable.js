@@ -47,10 +47,10 @@ export default function StatTable({rows , columns}) {
           </TableHead>
           <TableBody>
             {rows && rows.map((row) => (
-              <TableRow className="hover:bg-gray-200" key={row["Name"]} >
+              <TableRow className="hover:bg-gray-200" key={row['gameId']+ row['teamId']+row["playerId"]} >
                 {columns.map(key => {
                     if (key == "Name") {
-                      return <TableCell key={key}  align="left" ><a href={"/player/"+row["id"]}>
+                      return <TableCell key={key}  align="left" ><a href={"/player/"+row["playerId"]}>
                         {row[key]}
                         </a></TableCell>
                     }

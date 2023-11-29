@@ -1,20 +1,15 @@
 import {getPlayerGameEvents} from '@/lib/api-fetching'
-import gamePlayerEventSequenceToSummaryDict from "@/lib/transforms/GamePlayerEventSequenceToSummaryDict"
 import StatTable from '@/components/StatTable'
 import { ScatterContributions} from '@/components/Contributions'
+import preprocess from '@/lib/preprocess'
 
 
 export default async function Page({params}) {
     const gameEvents = await getPlayerGameEvents(params.playerId);
-    const summaryOfGamesWithPlayer = gamePlayerEventSequenceToSummaryDict(gameEvents)
-    const playerStats = Object.keys(summaryOfGamesWithPlayer).map(gameId => {
-      var temp_dict= summaryOfGamesWithPlayer[gameId][params.playerId]
-      temp_dict["Name"] = gameId
-      return temp_dict
-    })
-    
+    var rows = preprocess(gameEvents, (d) => d.playerId == params.playerId)
+
     const columns = [
-      "Game Id",
+      "gameId",
       "Goal",
       'Assist',
       '2nd Assist',
@@ -22,12 +17,14 @@ export default async function Page({params}) {
       'TA',
       'Drop',
       "",
-      "% Pass",
+      "% pass",
     ]
     return (
       <>
-      <StatTable rows={playerStats} columns={columns}/>
-      <ScatterContributions rows={playerStats}/>
+      <h1>
+      </h1>
+      <StatTable rows={rows} columns={columns}/>
+      <ScatterContributions rows={rows}/>
       </>
     )
 }

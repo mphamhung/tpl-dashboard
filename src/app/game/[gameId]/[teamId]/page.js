@@ -1,8 +1,6 @@
 'use clients'
-
 import {getGameEvents} from '@/lib/api-fetching'
-import gameEventSequenceToSummaryDict from "@/lib/transforms/GameEventSequenceToSummaryDict"
-
+import preprocess from '@/lib/preprocess'
 import StatTable from '@/components/StatTable'
 import {BarContributions, ScatterContributions} from '@/components/Contributions'
 import { Suspense } from 'react';
@@ -10,8 +8,7 @@ import { Suspense } from 'react';
 
 export default async function Page({params}) {
     const events = await getGameEvents(params.gameId, params.teamId);
-    const statSummaryDict = gameEventSequenceToSummaryDict(events)
-    const rows = Object.keys(statSummaryDict).map(playerId => statSummaryDict[playerId])
+    const rows = preprocess(events, (d) => true)
     const columns = [
       "Name",
       "Goal",
@@ -21,7 +18,7 @@ export default async function Page({params}) {
       'TA',
       'Drop',
       "",
-      "% Pass",
+      "% pass",
     ]
 
     return (

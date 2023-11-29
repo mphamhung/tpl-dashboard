@@ -16,6 +16,7 @@
     "@mui/x-data-grid": "^6.18.2",
     "@nextui-org/card": "^2.0.24",
     "@nextui-org/react": "^2.2.9",
+    "@tidyjs/tidy": "^2.5.2",
     "chart.js": "^4.4.0",
     "framer-motion": "^10.16.5",
     "next": "14.0.3",
