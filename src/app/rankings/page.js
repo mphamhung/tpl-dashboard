@@ -1,3 +1,5 @@
+'use client'
+
 import {getAllGameEvents} from '@/lib/api-fetching'
 import preprocess from '@/lib/preprocess'
 import StatTable from '@/components/StatTable'

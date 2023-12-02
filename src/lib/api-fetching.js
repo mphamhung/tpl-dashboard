@@ -2,7 +2,7 @@ const leagueId = process.env.leagueId
 const serverUrl = process.env.serverUrl
 
 export async function getGames() {
-    const res = await fetch(serverUrl+ 'games/' + leagueId,{ cache: 'no-store' }) 
+    const res = await fetch(serverUrl+ 'games/' + leagueId,) 
     // Revalidate every day
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
@@ -17,7 +17,7 @@ export async function getGames() {
 
 
 export async function getGameEvents(gameId, teamId) {
-    const res = await fetch(serverUrl+'gameEvents/'+gameId+"/"+teamId, { next: { revalidate: 86400 } })
+    const res = await fetch(serverUrl+'gameEvents/'+gameId+"/"+teamId, )
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
    
