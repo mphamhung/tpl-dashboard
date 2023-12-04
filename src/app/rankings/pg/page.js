@@ -27,24 +27,34 @@ export default async function Page() {
       mutate({ "GC": d => d["Goal"] + d["Assist"] + d["2nd Assist"],
       "% pass": d => (1- (d["TA"] / ( d["TA"] +d[""] +d["Assist"] + d["2nd Assist"] ) )).toFixed(2) }),
     )
-
+    rows = tidy(
+      rows,
+      mutate({ 
+      "gpg": d => (d["Goal"] / d["GP"] ).toFixed(2),
+      "apg":  d => ((d["Assist"]) / d["GP"]).toFixed(2),
+      "2apg":  d => (d["2nd Assist"] / d["GP"]).toFixed(2),
+      "dpg":  d =>( (d["D"]) / d["GP"]).toFixed(2),
+      "tapg":  d => ((d["TA"]) / d["GP"]).toFixed(2),
+      "drpg":  d => ((d["Drop"]) / d["GP"]).toFixed(2),
+ }),
+    )
 
     const columns = [
-      "Name",
-      "Goal",
-      "Assist",
-      "2nd Assist",
-      "D",
-      "TA",
-      "Drop",
-      "% pass",
-      "GP",
-    ]
+        "Name",
+        "gpg",
+        "apg",
+        "2apg",
+        "dpg",
+        "tapg",
+        "drpg",
+        "% pass",
+        "GP",
+      ]
     
     return (
       <>
         <h1> Rankings </h1>
-        <Link href={"/rankings/pg"}>Per game stats</Link>
+        <Link href="/rankings">Aggregate Stats</Link>
         <StatTable rows={rows} columns={columns}/>
       </>
     )

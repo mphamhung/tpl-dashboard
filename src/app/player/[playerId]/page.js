@@ -1,5 +1,3 @@
-'use client'
-
 import {getPlayerGameEvents} from '@/lib/api-fetching'
 import StatTable from '@/components/StatTable'
 import { ScatterContributions} from '@/components/Contributions'

@@ -1,4 +1,3 @@
-'use client'
 import GamesList from '../components/GamesList'
 
 export default function Home() {

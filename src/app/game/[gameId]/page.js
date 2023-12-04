@@ -1,5 +1,3 @@
-'use client'
-
 import {getGames} from '@/lib/api-fetching'
 import { Suspense } from 'react';
 import ScoreCard from '@/components/ScoreCard';
