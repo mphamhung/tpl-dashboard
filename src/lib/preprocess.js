@@ -35,7 +35,6 @@ function gameEventSequenceToRows(game_events_sequence) {
 
 export default function preprocess(game_events_sequence, filter_func) {
     var rows = gameEventSequenceToRows(game_events_sequence)
-    console.log(rows)
     rows = tidy(
         rows, 
         mutate({ "GC": d => d["Goal"] + d["Assist"] + d["2nd Assist"],
