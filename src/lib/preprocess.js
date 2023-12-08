@@ -35,7 +35,7 @@ function gameEventSequenceToRows(game_events_sequence) {
 
 export default function preprocess(game_events_sequence, filter_func) {
     var rows = gameEventSequenceToRows(game_events_sequence)
-
+    console.log(rows)
     rows = tidy(
         rows, 
         mutate({ "GC": d => d["Goal"] + d["Assist"] + d["2nd Assist"],
@@ -62,25 +62,25 @@ export default function preprocess(game_events_sequence, filter_func) {
 
     var graph = {}
 
-    var last_sequence_num = 0
-    var last_playerId = null
+    // var last_sequence_num = 0
+    // var last_playerId = null
 
-    for (const event of game_events_sequence) {
-        if (event.sequence < last_sequence_num) {
-            last_playerId = null
-            continue
-        }
-        if (last_playerId !== null) {
-            if (!(last_playerId in graph)) {
-                graph[last_playerId] = {}
-            }
-            if (!(event.player.id in graph[last_playerId])) {
-                graph[last_playerId][event.player.id] = 0
-            }
-            graph[last_playerId][event.player.id] += 1
-        }
-        last_playerId = event.player.id
-    }
+    // for (const event of game_events_sequence) {
+    //     if (event.sequence < last_sequence_num) {
+    //         last_playerId = null
+    //         continue
+    //     }
+    //     if (last_playerId !== null) {
+    //         if (!(last_playerId in graph)) {
+    //             graph[last_playerId] = {}
+    //         }
+    //         if (!(event.player.id in graph[last_playerId])) {
+    //             graph[last_playerId][event.player.id] = 0
+    //         }
+    //         graph[last_playerId][event.player.id] += 1
+    //     }
+    //     last_playerId = event.player.id
+    // }
 
     return [rows, graph]
 }
