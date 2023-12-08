@@ -16,7 +16,7 @@ export default async function Page() {
           "Name": first("Name"),
           'Goal': sum("Goal"), 
           'Assist': sum("Assist"), 
-          '2nd Assist': sum("2nd Assist'"), 
+          '2nd Assist': sum("2nd Assist"), 
           'D': sum("D"), 
           'TA': sum("TA"), 
           'Drop': sum("Drop"), 
