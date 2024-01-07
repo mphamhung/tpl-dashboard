@@ -19,12 +19,16 @@
     "@tidyjs/tidy": "^2.5.2",
     "chart.js": "^4.4.0",
     "framer-motion": "^10.16.5",
+    "mysql2": "^3.6.5",
+    "net": "^1.0.2",
     "next": "14.0.3",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "recharts": "^2.10.1",
-    "styled-components": "^6.1.1"
+    "serverless-mysql": "^1.5.5",
+    "styled-components": "^6.1.1",
+    "tls": "^0.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
