@@ -15,7 +15,9 @@ const GameCard = ({id, teamId, teamName}) => (
   );
 
 export default async function GamesList( {leagueId} ) {
+    console.log('start')
     const games = await getGames(leagueId)
+    console.log('end')
     var games_by_date = {}
     var games_by_id = {}
 

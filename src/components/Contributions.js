@@ -58,7 +58,7 @@ export function BarContributions({rows}) {
 }
 
   
-export function ScatterContributions({rows}) {
+export function ScatterPlot({rows, x_key, y_key}) {
     const [hydrated, setHydrated] = React.useState(false);
     React.useEffect(() => {
         setHydrated(true);
@@ -68,9 +68,8 @@ export function ScatterContributions({rows}) {
         return null;
     }
     
-    rows.sort(function(a, b){return a["% T"]+a["% GC"] - b["% T"] - b["% GC"]}).reverse()
     const labels = rows.map(row => {
-        return row['Name']
+        return row['name']
     })
 
     const options = {
@@ -79,15 +78,17 @@ export function ScatterContributions({rows}) {
             beginAtZero: true,
           },
         },
+        showTooltips: true,
+        tooltipEvents: [],
       };
 
     const data = {
         labels: labels,
         datasets: [
             {
-            label: '% GC vs % Touches',
+            label: `${x_key} vs ${y_key}`,
             data: rows.map(row => {
-                return {x: row["% T"], y: row["% GC"]}
+                return {x: row[x_key], y: row[y_key]}
             }),
             backgroundColor: 'rgba(255, 99, 132, 0.5)',
             pointRadius: 10,
@@ -97,4 +98,61 @@ export function ScatterContributions({rows}) {
     return(
         <Scatter data={data} options={options} />
     )
+}
+
+
+const colors = {
+    "name": 'rgba(255, 99, 132, 0.5)',
+    "goals": 'rgba(255, 99, 132, 0.5)',
+    "assists": 'rgba(255, 99, 132, 0.5)',
+    "second_assists": 'rgba(255, 99, 132, 0.5)',
+    "blocks": 'rgba(255, 99, 132, 0.5)',
+    "throwaways": 'rgba(255, 99, 132, 0.5)',
+    "drops": 'rgba(255, 99, 132, 0.5)',
+    "other_passes": 'rgba(255, 255, 132, 0.5)',
+    "% GC": 'rgba(255, 99, 132, 0.5)',
+    "% T": 'rgba(255, 255, 132, 0.5)',
+}
+export function StackedBar({rows, keys, sort_key}) {
+    const [hydrated, setHydrated] = React.useState(false);
+    React.useEffect(() => {
+        setHydrated(true);
+    }, []);
+    if (!hydrated) {
+        // Returns null on first render, so the client and server match
+        return null;
+    }
+
+    rows.sort(function(a, b){return (a[sort_key]) - (b[sort_key])}).reverse()
+    
+    const labels = rows.map(row => {
+        return row['name']
+    })
+    const data = {
+        labels: labels,
+        datasets: keys.map(key => {
+            return             {
+                label: key,
+                data: rows.map(row => row[key]),
+                backgroundColor: colors[key],
+                }
+        }
+        )
+        };
+
+    const options = {
+        scales: {
+            y: {
+                stacked: true
+            },
+            x: {
+                stacked: true
+            }
+        }
+    }
+    console.log(data)
+    return(
+        <Bar data={data} options={options}/>
+    )
+
 }

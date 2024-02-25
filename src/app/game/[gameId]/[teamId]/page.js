@@ -1,6 +1,6 @@
 import {GameTable} from '@/lib/preprocess'
 import StatTable from '@/components/StatTable'
-import {BarContributions, ScatterContributions} from '@/components/Contributions'
+import {StackedBar, ScatterPlot} from '@/components/Contributions'
 import { Suspense } from 'react';
 
 export default async function Page({params}) {
@@ -23,8 +23,11 @@ export default async function Page({params}) {
   return (
     <Suspense>
       <StatTable rows={rows} columns={columns} />
-      <BarContributions rows={rows} />
-      <ScatterContributions rows={rows} />
+      <StackedBar rows={rows} keys={['% GC','% T']} sort_key='% total'/>
+      <ScatterPlot rows={rows} x_key={'% GC'} y_key={'% T'}/>
+      <StackedBar rows={rows} keys={['throwaways','other_passes']} sort_key='other_passes'/>
+      <StackedBar rows={rows} keys={['blocks']} sort_key='blocks'/>
+      
     </Suspense>
   )
 }

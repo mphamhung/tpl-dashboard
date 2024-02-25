@@ -53,22 +53,32 @@ function preprocess(game_rows, filter_func) {
     let rows = tidy(
         game_rows, 
         mutate({ "GC": d => d["goals"] + d["assists"] + d["second_assists"],
-        "% pass": d => (1- (d["throwaways"] / ( d["throwaways"] +d["other_passes"] +d["assists"] + d["second_assists"] ) )).toFixed(2) }),
-      )
+        "% pass": d => (1- (d["throwaways"] / ( d["throwaways"] +d["other_passes"] +d["assists"] + d["second_assists"] ) )).toFixed(2),
+        "total_touches": d => d["GC"] + d["other_passes"]
+            }
+      ))
     
     const totals = tidy(
         rows,
         groupBy(['gameId', 'teamId'], [
           summarize({ total_gc: sum('GC'), total_touches: sum("other_passes")})
-        ],  groupBy.object({ single: true }))
+        ],  
+        groupBy.object({ single: true }))
       )
 
     rows = tidy(
         rows,
         mutate({"% GC": d=> (d["GC"]/totals[d["gameId"]][d['teamId']]['total_gc']).toFixed(2),
-        "% T": d=> (d["other_passes"]/totals[d["gameId"]][d['teamId']]['total_touches']).toFixed(2)
+        "% T": d=> (d["other_passes"]/totals[d["gameId"]][d['teamId']]['total_touches']).toFixed(2),
     })
     )
+    rows = tidy(
+        rows, 
+        mutate( {
+            "% total": d=> (d["% GC"] * d["% T"])
+        })
+    )
+   
     rows = tidy(
         rows, filter(filter_func)
     )
