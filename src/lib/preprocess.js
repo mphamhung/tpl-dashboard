@@ -76,32 +76,12 @@ function preprocess(game_rows, filter_func) {
 
     var graph = {}
 
-    // var last_sequence_num = 0
-    // var last_playerId = null
-
-    // for (const event of game_events_sequence) {
-    //     if (event.sequence < last_sequence_num) {
-    //         last_playerId = null
-    //         continue
-    //     }
-    //     if (last_playerId !== null) {
-    //         if (!(last_playerId in graph)) {
-    //             graph[last_playerId] = {}
-    //         }
-    //         if (!(event.player.id in graph[last_playerId])) {
-    //             graph[last_playerId][event.player.id] = 0
-    //         }
-    //         graph[last_playerId][event.player.id] += 1
-    //     }
-    //     last_playerId = event.player.id
-    // }
-
     return [rows, graph]
 }
 
 
 
-export async function getGameTable(gameId, teamId,  use_cache=true) {
+export async function GameTable(gameId, teamId,  use_cache=true) {
     let results = await connection.promise().query(`select * from GAME_ROWS where gameId = ${gameId} and teamId = ${teamId};`)
     .then(([results, fields]) => {
         if (results.length == 0 || !use_cache) {
@@ -131,3 +111,28 @@ export async function getGameTable(gameId, teamId,  use_cache=true) {
 }
 
 
+export async function PlayerGameEvents(playerId, use_cache) {
+    let results = await connection.promise().query(`select * from GAME_ROWS where playerId = ${playerId};`)
+    .then(async ([results, fields]) => {
+        if (!use_cache) {
+            let rows = await Promise.all(results.map( async ({gameId, teamId}) => {
+                        return GameTable(gameId, teamId)
+                      }))             
+            return rows.flat(1).filter(row => row.playerId == playerId)
+          } else{
+            return results
+          }
+        
+        })
+    
+    return results
+    }
+
+export async function AllGameEvents() {
+    let results = await connection.promise().query(`select * from GAME_ROWS;`)
+    .then(([results, fields]) => {
+        return results
+        })
+    
+    return results
+    }

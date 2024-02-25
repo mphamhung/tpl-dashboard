@@ -1,11 +1,11 @@
 import { tidy, sum } from '@tidyjs/tidy'
 import Link from 'next/link'
 
-import {getGameTable} from '@/lib/preprocess'
+import {GameTable} from '@/lib/preprocess'
 
 export default async function ScoreCard({game}) {
-    const homeTeamEvents = await getGameTable(game.id, game.homeTeamId)
-    const awayTeamEvents = await getGameTable(game.id, game.awayTeamId)
+    const homeTeamEvents = await GameTable(game.id, game.homeTeamId)
+    const awayTeamEvents = await GameTable(game.id, game.awayTeamId)
 
     const homeScore = tidy(
         homeTeamEvents,

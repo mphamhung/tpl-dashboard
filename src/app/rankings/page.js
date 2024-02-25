@@ -1,27 +1,23 @@
-import {getAllGameEvents} from '@/lib/api-fetching'
-import preprocess from '@/lib/preprocess'
+import {AllGameEvents} from '@/lib/preprocess'
 import StatTable from '@/components/StatTable'
 
 import { tidy, mutate, groupBy,summarize, sum, first, nDistinct} from '@tidyjs/tidy'
-import Link from 'next/link';
-
 
 export default async function Page() {
-    const gameEvents = await getAllGameEvents();
-    var [rows, _] = preprocess(gameEvents, (d) => true)
+    var rows = await AllGameEvents();
     rows = tidy(
       rows,
       groupBy('playerId' , [
         summarize({
-          "Name": first("Name"),
-          'Goal': sum("Goal"), 
-          'Assist': sum("Assist"), 
-          '2nd Assist': sum("2nd Assist"), 
-          'D': sum("D"), 
-          'TA': sum("TA"), 
-          'Drop': sum("Drop"), 
-          '': sum(""), 
-          'GP': nDistinct("gameId"),
+          "name":  first("name"),
+          "goals":  sum("goals"), 
+          "assists":  sum("assists"), 
+          "second_assists":  sum("second_assists"), 
+          "blocks":  sum("blocks"), 
+          "throwaways":  sum("throwaways"), 
+          "drops":  sum("drops"), 
+          "other_passes": sum("other_passes"), 
+          'games_played': nDistinct("gameId"),
         })
       ]),
       mutate({ "GC": d => d["Goal"] + d["Assist"] + d["2nd Assist"],
@@ -30,21 +26,20 @@ export default async function Page() {
 
 
     const columns = [
-      "Name",
-      "Goal",
-      "Assist",
-      "2nd Assist",
-      "D",
-      "TA",
-      "Drop",
-      "% pass",
-      "GP",
+      "name",
+      "goals",
+      "assists",
+      "second_assists",
+      "blocks",
+      "throwaways",
+      "drops",
+      "other_passes",
+      "games_played"
     ]
     
     return (
       <>
         <h1> Rankings </h1>
-        <Link href={"/rankings/pg"}>Per game stats</Link>
         <StatTable rows={rows} columns={columns}/>
       </>
     )

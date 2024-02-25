@@ -1,12 +1,11 @@
 import StatTable from '@/components/StatTable'
 import { ScatterContributions} from '@/components/Contributions'
-import getPlayerGameEvents from '@/lib/preprocess-player'
+import {PlayerGameEvents} from '@/lib/preprocess'
 import { tidy, first ,mutate} from '@tidyjs/tidy'
 
 
 export default async function Page({params}) {
-    const rows = await getPlayerGameEvents(params.playerId);
-    // var [rows, graph] = preprocess(gameEvents, (d) => d.playerId == params.playerId)
+    const rows = await PlayerGameEvents(params.playerId);
     const playerName = tidy(rows,first("name"))
 
     console.log(rows)
