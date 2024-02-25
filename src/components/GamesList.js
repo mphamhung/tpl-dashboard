@@ -14,8 +14,8 @@ const GameCard = ({id, teamId, teamName}) => (
     </Link>
   );
 
-export default async function GamesList() {
-    const games = await getGames()
+export default async function GamesList( {leagueId} ) {
+    const games = await getGames(leagueId)
     var games_by_date = {}
     var games_by_id = {}
 

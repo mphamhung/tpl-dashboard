@@ -79,6 +79,10 @@ function preprocess(game_rows, filter_func) {
     return [rows, graph]
 }
 
+// export async function GamesMetadata() {
+//     const game_metadata = await getGamesMetadata()
+//     sql = "INSERT IGNORE INTO GAME_METADATA (leagueId, gameId, date, awayTeamId, homeTeamId, time)"
+// }
 
 
 export async function GameTable(gameId, teamId,  use_cache=true) {
