@@ -20,8 +20,6 @@ export default async function PlayByPlay({game}) {
         }
     }
 
-    console.log(homePosessions)
-
     return (        
         <>
         hello

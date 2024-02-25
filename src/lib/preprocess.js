@@ -1,5 +1,5 @@
 import { tidy, mutate, groupBy,summarize, sum, filter, last} from '@tidyjs/tidy'
-import {getGameEvents} from '@/lib/api-fetching'
+import {getGameEvents, getGamesMetadata} from '@/lib/api-fetching'
 import { connection } from '@/lib/db/db'
 
 const EVENT_MAPPING = {
@@ -79,10 +79,31 @@ function preprocess(game_rows, filter_func) {
     return [rows, graph]
 }
 
-// export async function GamesMetadata() {
-//     const game_metadata = await getGamesMetadata()
-//     sql = "INSERT IGNORE INTO GAME_METADATA (leagueId, gameId, date, awayTeamId, homeTeamId, time)"
-// }
+export async function GamesMetadata() {
+    const game_metadata = await getGamesMetadata()
+    let values = game_metadata.map(row => [row.id, row.leagueId, new Date(row.date), row.time, row.awayTeamId, row.homeTeamId, row.awayTeam, row.homeTeam ])
+    let sql = "INSERT IGNORE INTO GAME_METADATA (gameId, leagueId, date, time, awayTeamId, homeTeamId, awayTeam, homeTeam) VALUES ?"
+    connection.query(sql, [values], (err, result) => {
+        if (err) throw err;
+        console.log("inserted ", result.affectedRows, " new rows")
+    })
+}
+export async function GetLeagueIds() {
+    let sql = "SELECT DISTINCT leagueId FROM GAME_METADATA;"
+    let results = await connection.promise().query(sql).then(([results, fields]) => {
+            return results
+    })
+    return results
+}
+
+export async function GetGameLeagueId(gameIds) {
+    let sql = `SELECT * FROM GAME_METADATA WHERE gameId IN (${gameIds});`
+    let results = await connection.promise().query(sql).then(([results, fields]) => {
+            return results
+    })
+    
+    return results
+}
 
 
 export async function GameTable(gameId, teamId,  use_cache=true) {
@@ -101,7 +122,6 @@ export async function GameTable(gameId, teamId,  use_cache=true) {
             })
             return rows
             
-            // console.log(rows)
         })
         } else {
             return results

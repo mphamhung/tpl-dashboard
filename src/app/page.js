@@ -1,14 +1,20 @@
-import GamesList from '@/components/GamesList'
+'use client';
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const defaultLeagueId = "778"
-export default function Home() {
-  return (
-    <>
-    <div >
-    <main className="flex flex-row flex-grow">
-          <GamesList leagueId={defaultLeagueId}/>
-    </main>
-    </div>
-    </>
-  )
-}
+
+const Home = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Perform the redirect
+    router.push(`/${defaultLeagueId}`); // Redirect to '/new-route'
+  }, []);
+
+  // This component doesn't actually render anything
+  return null;
+
+};
+
+export default Home;

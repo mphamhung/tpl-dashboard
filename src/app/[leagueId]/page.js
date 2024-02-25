@@ -1,6 +1,5 @@
 import GamesList from  '@/components/GamesList'
-
-export default function Home({params}) {
+export default async function Home({params}) {
   return (
     <>
     <div >

@@ -26,14 +26,13 @@ export default function StatTable({rows , columns}) {
     if (reverse) {
       rows.reverse()
     }
-    console.log(sortKey)
     return (
         <TableContainer component={Paper}>
         <Table size="small" aria-label="customized table">
           <TableHead>
             <TableRow>
                 {columns.map(key=> {
-                    if (key == "Name") {
+                    if (key == "name") {
                         return <TableCell key={key} onClick={ _ => {setSortKey(key);setReverse(!reverse);}}>{key}</TableCell>
                     }
                     else if (key == ""){
@@ -58,6 +57,9 @@ export default function StatTable({rows , columns}) {
                       return <TableCell key={key}  align="left" ><a href={"/game/"+row["gameId"]}>
                         {row[key]}
                         </a></TableCell>
+                    }
+                    else if (key == "date") {
+                      return <TableCell key={key}  align="left" >{row[key].toDateString()}</TableCell>
                     }
                     else {
                       return <TableCell key={key}  align="left" >{row[key]}</TableCell>

@@ -54,13 +54,13 @@ export async function getAllGameEvents() {
   return flattened_games
 }
 
-// export async function getGamesMetadata() {
-//   const res = await fetch(serverUrl+'games')
-//   if (!res.ok) {
-//     // This will activate the closest `error.js` Error Boundary
-//     throw new Error('Failed to fetch data')
-//   }
+export async function getGamesMetadata() {
+  const res = await fetch(serverUrl+'games')
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch data')
+  }
 
-//   const fetched_data = await res.json()
-//   return fetched_data
-// }
+  const fetched_data = await res.json()
+  return fetched_data
+}

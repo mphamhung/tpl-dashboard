@@ -1,13 +1,18 @@
-import {AllGameEvents} from '@/lib/preprocess'
+import {AllGameEvents, GetGameLeagueId} from '@/lib/preprocess'
 import StatTable from '@/components/StatTable'
 
-import { tidy, mutate, groupBy,summarize, sum, first, nDistinct} from '@tidyjs/tidy'
+import { tidy, mutate, groupBy,summarize, sum, first, nDistinct, leftJoin} from '@tidyjs/tidy'
 
 export default async function Page() {
     var rows = await AllGameEvents();
-    rows = tidy(
+    const game_league_mapping = await GetGameLeagueId(rows.map(row => row.gameId))
+    const joinedTable = tidy(
       rows,
-      groupBy('playerId' , [
+      leftJoin(game_league_mapping, { by: "gameId" })
+    );
+    let summaryTable = tidy(
+      joinedTable,
+      groupBy(['playerId', 'leagueId'] , [
         summarize({
           "name":  first("name"),
           "goals":  sum("goals"), 
@@ -22,6 +27,11 @@ export default async function Page() {
       ]),
       mutate({ "GC": d => d["Goal"] + d["Assist"] + d["2nd Assist"],
       "% pass": d => (1- (d["TA"] / ( d["TA"] +d[""] +d["Assist"] + d["2nd Assist"] ) )).toFixed(2) }),
+    )
+    let groupedByLeague = tidy(
+      summaryTable,
+      groupBy('leagueId',
+      groupBy.object())
     )
 
 
@@ -40,7 +50,14 @@ export default async function Page() {
     return (
       <>
         <h1> Rankings </h1>
-        <StatTable rows={rows} columns={columns}/>
+        {Object.entries(groupedByLeague).reverse().map( ([leagueId, rows])=> {
+      return (
+        <>
+      <h1 className='flex-grow m2 bg-grey' justify="center">
+        {leagueId}
+      </h1>
+      <StatTable rows={rows.reverse()} columns={columns}/>
       </>
+      )})}      </>
     )
 }

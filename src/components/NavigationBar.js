@@ -9,6 +9,8 @@ export default function NavigationBar() {
                 Home
                 </h1></Link>
             <Link href="/rankings" className="m-4 ">Rankings</Link>
+            <Link href="/leagues" className="m-4 ">Leagues</Link>
+
         </div>
     </div>
 
