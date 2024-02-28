@@ -79,7 +79,14 @@ export default async function Forecast({game}) {
             "dr pg":  sum("dr pg"), 
             "touches pg": sum("touches pg"), 
         }),
-        mutate({'name': "total"})
+        mutate({'name': "total",
+        "g pg": d=> d["g pg"].toFixed(2),
+        "a pg": d=> d["a pg"].toFixed(2),
+        "2a pg": d=> d["2a pg"].toFixed(2),
+        "b pg": d=> d["b pg"].toFixed(2),
+        "ta pg": d=> d["ta pg"].toFixed(2),
+        "dr pg": d=> d["dr pg"].toFixed(2),
+        "touches pg": d=> d["touches pg"].toFixed(2),}),
     )
     let awayTeamTotal = tidy(
         awayTeamRows,
@@ -92,7 +99,14 @@ export default async function Forecast({game}) {
             "dr pg":  sum("dr pg"), 
             "touches pg": sum("touches pg"), 
         }),
-        mutate({'name': "total"})
+        mutate({'name': "total",
+        "g pg": d=> d["g pg"].toFixed(2),
+        "a pg": d=> d["a pg"].toFixed(2),
+        "2a pg": d=> d["2a pg"].toFixed(2),
+        "b pg": d=> d["b pg"].toFixed(2),
+        "ta pg": d=> d["ta pg"].toFixed(2),
+        "dr pg": d=> d["dr pg"].toFixed(2),
+        "touches pg": d=> d["touches pg"].toFixed(2),}),
     )
     let columns = [
         "name",
