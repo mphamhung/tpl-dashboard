@@ -1,6 +1,8 @@
 import Link from 'next/link'
-import {getGames} from '../lib/api-fetching'
+import {getGames } from '../lib/api-fetching'
+import {GetGameLeagueId} from '../lib/preprocess'
 import ScoreCard from './ScoreCard';
+import { Suspense } from 'react';
 
 
 const GameCard = ({id, teamId, teamName}) => (
@@ -15,9 +17,7 @@ const GameCard = ({id, teamId, teamName}) => (
   );
 
 export default async function GamesList( {leagueId} ) {
-    console.log('start')
     const games = await getGames(leagueId)
-    console.log('end')
     var games_by_date = {}
     var games_by_id = {}
 
@@ -39,7 +39,13 @@ export default async function GamesList( {leagueId} ) {
                 return (
                     <section key={gameId} className='flex flex-row m-2 space-x-4'>
                         <GameCard  id={game.id} teamId={game.homeTeamId} teamName={game.homeTeam}/> 
+                        <Suspense fallback={
+                                <div align='center' justify='center' className='whitespace-nowrap'>
+                                ? : ?
+                                </div> 
+                        }>
                         <ScoreCard game={game}/>
+                        </Suspense>
                         <GameCard  id={game.id} teamId={game.awayTeamId} teamName={game.awayTeam}/>
                      </section>
                 ) 
