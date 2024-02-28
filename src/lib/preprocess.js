@@ -124,12 +124,13 @@ export async function GameTable(gameId, teamId,  use_cache=true) {
           return getGameEvents(gameId, teamId).then(events => {
             let rows = gameEventSequenceToRows(events)
             let values = rows.map(row => Object.values(row));
-
-            let sql = "INSERT IGNORE INTO GAME_ROWS (name, gameId, playerId, teamId, goals, assists, second_assists, blocks, throwaways, drops, other_passes) VALUES ?"
-            connection.query(sql, [values], (err, result) => {
-                if (err) throw err;
-                console.log("inserted ", result.affectedRows, " new rows")
-            })
+            if (values.length > 0) {
+                let sql = "INSERT IGNORE INTO GAME_ROWS (name, gameId, playerId, teamId, goals, assists, second_assists, blocks, throwaways, drops, other_passes) VALUES ?"
+                connection.query(sql, [values], (err, result) => {
+                    if (err) throw err;
+                    console.log("inserted ", result.affectedRows, " new rows")
+                })
+            }
             return rows
             
         })
