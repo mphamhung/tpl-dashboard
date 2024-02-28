@@ -25,8 +25,16 @@ export default async function Page() {
           'games_played': nDistinct("gameId"),
         })
       ]),
-      mutate({ "GC": d => d["Goal"] + d["Assist"] + d["2nd Assist"],
-      "% pass": d => (1- (d["TA"] / ( d["TA"] +d[""] +d["Assist"] + d["2nd Assist"] ) )).toFixed(2) }),
+      mutate({ "GC": d => d["goals"] + d["assists"] + d["second_assists"],
+      "% pass": d => (1- (d["throwaways"] / ( d["throwaways"] +d["other_passes"] +d["assists"] + d["second_assists"] ) )).toFixed(2),
+      "g pg": d => ( (d["goals"] / ( d["games_played"] ) )).toFixed(2),
+      "a pg": d => ( (d["assists"] / ( d["games_played"] ) )).toFixed(2),
+      "2a pg": d => ( (d["second_assists"] / ( d["games_played"] ) )).toFixed(2),
+      "b pg": d => ( (d["blocks"] / ( d["games_played"] ) )).toFixed(2),
+      "ta pg": d => ( (d["throwaways"] / ( d["games_played"] ) )).toFixed(2),
+      "dr pg": d => ( (d["drops"] / ( d["games_played"] ) )).toFixed(2),
+      "touches pg": d => ( (d["other_passes"] / ( d["games_played"] ) )).toFixed(2),
+     }),
     )
     let groupedByLeague = tidy(
       summaryTable,
@@ -37,14 +45,15 @@ export default async function Page() {
 
     const columns = [
       "name",
-      "goals",
-      "assists",
-      "second_assists",
-      "blocks",
-      "throwaways",
-      "drops",
-      "other_passes",
-      "games_played"
+      "g pg",
+      "a pg",
+      "2a pg",
+      "b pg",
+      "ta pg",
+      "dr pg",
+      "touches pg",
+      "games_played",
+      "% pass",
     ]
     
     return (
