@@ -148,7 +148,6 @@ export async function GameTable(gameId, teamId, date=null) {
     return rows
 }
 
-
 export async function PlayerGameEvents(playerId, use_cache) {
     let results = await connection.promise().query(`select * from GAME_ROWS where playerId = ${playerId};`)
     .then(async ([results, fields]) => {

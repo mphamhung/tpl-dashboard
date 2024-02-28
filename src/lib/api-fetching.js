@@ -55,7 +55,7 @@ export async function getAllGameEvents() {
 }
 
 export async function getGamesMetadata() {
-  const res = await fetch(serverUrl+'games')
+  const res = await fetch(serverUrl+'games',{cache:'no-store'})
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
     throw new Error('Failed to fetch data')
