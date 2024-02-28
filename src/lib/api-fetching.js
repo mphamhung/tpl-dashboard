@@ -64,3 +64,15 @@ export async function getGamesMetadata() {
   const fetched_data = await res.json()
   return fetched_data
 }
+
+export async function getTeamInfo(teamId) {
+  const res = await fetch(serverUrl+'teams')
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch data')
+  }
+
+  const fetched_data = await res.json()
+  const [teamInfo, _] = fetched_data.filter(team=>team.id === teamId)
+  return teamInfo
+} 
