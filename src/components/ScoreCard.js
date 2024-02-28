@@ -4,8 +4,8 @@ import Link from 'next/link'
 import {GameTable} from '@/lib/preprocess'
 
 export default async function ScoreCard({game}) {
-    const homeTeamEvents = await GameTable(game.id, game.homeTeamId)
-    const awayTeamEvents = await GameTable(game.id, game.awayTeamId)
+    const homeTeamEvents = await GameTable(game.id, game.homeTeamId, game.date)
+    const awayTeamEvents = await GameTable(game.id, game.awayTeamId, game.date)
 
     const homeScore = tidy(
         homeTeamEvents,

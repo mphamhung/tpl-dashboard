@@ -116,10 +116,13 @@ export async function GetGameLeagueId(gameIds) {
 }
 
 
-export async function GameTable(gameId, teamId,  use_cache=true) {
+export async function GameTable(gameId, teamId, date=null) {
+    let today = new Date();
+    let game_date = new Date(date);
+    let game_is_today = today.getDate() === game_date.getDate()
     let results = await connection.promise().query(`select * from GAME_ROWS where gameId = ${gameId} and teamId = ${teamId};`)
     .then(([results, fields]) => {
-        if (results.length == 0 || !use_cache) {
+        if (results.length == 0 || game_is_today) {
           console.log(`Game table gameId = ${gameId} and teamId = ${teamId} not found - processing`)
           return getGameEvents(gameId, teamId).then(events => {
             let rows = gameEventSequenceToRows(events)

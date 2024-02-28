@@ -1,11 +1,13 @@
-import {GameTable} from '@/lib/preprocess'
+import {GameTable, GetGameLeagueId} from '@/lib/preprocess'
 import StatTable from '@/components/StatTable'
 import {StackedBar, ScatterPlot} from '@/components/Contributions'
 import { Suspense } from 'react';
 
 export default async function Page({params}) {
   // const events = await getGameEvents(params.gameId, params.teamId)
-  const rows = await GameTable(params.gameId, params.teamId)
+  const [game_metadata, _ ] = await GetGameLeagueId([params.gameId])
+  console.log(game_metadata)
+  const rows = await GameTable(params.gameId, params.teamId, game_metadata.date)
   // console.log(rows)
   // const [rows, _] = preprocess(events, (d) => true)
   const columns = [
