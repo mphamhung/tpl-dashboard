@@ -17,7 +17,7 @@ export default async function ScoreCard({game}) {
     )
 
     return (        
-        <Link href={{pathname:`/game/${game.id}`}}>
+        <Link href={{pathname:`/game/${game.id}`}} align='center' justify='center' className='bg-gray-700 rounded grid hover:bg-gray-500'>
         <div align='center' justify='center' className='whitespace-nowrap'>
         {homeScore} : {awayScore}
         </div>          
