@@ -14,7 +14,7 @@ export async function getGames(leagueId) {
 
 
 export async function getGameEvents(gameId, teamId) {
-    const res = await fetch(serverUrl+'gameEvents/'+gameId+"/"+teamId, )
+    const res = await fetch(serverUrl+'gameEvents/'+gameId+"/"+teamId, {cache:'no-store'} )
 
     if (!res.ok) {
       // This will activate the closest `error.js` Error Boundary
