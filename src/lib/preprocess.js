@@ -119,16 +119,35 @@ export async function GetGameLeagueId(gameIds) {
 export async function GameTable(gameId, teamId, date=null) {
     let today = new Date();
     let game_date = new Date(date);
-    let game_is_today = today.getDate() === game_date.getDate()
+    let game_is_today = (today.getDate() === game_date.getDate() && today.getMonth() === game_date.getMonth())
     let results = await connection.promise().query(`select * from GAME_ROWS where gameId = ${gameId} and teamId = ${teamId};`)
     .then(([results, fields]) => {
-        if (results.length == 0 || game_is_today) {
-          console.log(`Game table gameId = ${gameId} and teamId = ${teamId} not found - processing`)
+        if (game_is_today) {
+            console.log(`Game is today - processing`)
+        }
+        if (results.length == 0) {
+            console.log(`Game table gameId = ${gameId} and teamId = ${teamId} not found - processing`)
+        }
+        if (game_is_today || results.length == 0) {
           return getGameEvents(gameId, teamId).then(events => {
             let rows = gameEventSequenceToRows(events)
             let values = rows.map(row => Object.values(row));
             if (values.length > 0) {
-                let sql = "INSERT IGNORE INTO GAME_ROWS (name, gameId, playerId, teamId, goals, assists, second_assists, blocks, throwaways, drops, other_passes) VALUES ?"
+                // let sql = "INSERT IGNORE INTO GAME_ROWS (name, gameId, playerId, teamId, goals, assists, second_assists, blocks, throwaways, drops, other_passes) VALUES ?"
+                let sql = `INSERT INTO GAME_ROWS (name, gameId, playerId, teamId, goals, assists, second_assists, blocks, throwaways, drops, other_passes)
+                            VALUES ?
+                            ON DUPLICATE KEY UPDATE 
+                            name = VALUES(name), 
+                            gameId = VALUES(gameId), 
+                            playerId = VALUES(playerId), 
+                            teamId = VALUES(teamId), 
+                            goals = VALUES(goals), 
+                            assists = VALUES(assists), 
+                            second_assists = VALUES(second_assists), 
+                            blocks = VALUES(blocks), 
+                            throwaways = VALUES(throwaways), 
+                            drops = VALUES(drops), 
+                            other_passes = VALUES(other_passes);`
                 connection.query(sql, [values], (err, result) => {
                     if (err) throw err;
                     console.log("inserted ", result.affectedRows, " new rows")
