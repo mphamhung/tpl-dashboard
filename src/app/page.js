@@ -10,7 +10,12 @@ const Home = () => {
 
   useEffect(() => {
     // wake api
-    const res = fetch("https://tplapp.onrender.com/").then(setApiReady(true));
+    const queryApi = async () => {
+      let _ = await fetch("https://tplapp.onrender.com/");
+      setApiReady(true);
+    };
+
+    queryApi();
   }, []);
 
   useEffect(() => {

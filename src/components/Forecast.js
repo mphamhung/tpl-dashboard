@@ -144,20 +144,18 @@ export default async function Forecast({ game }) {
       "touches pg": (d) => d["touches pg"].toFixed(2),
     })
   );
-  let columns = ["name", "g pg", "a pg", "2a pg", "b pg", "ta pg", "dr pg"];
-
+  let columns = ["g pg"];
   return (
     <>
-      <h1> Forecasted Results </h1>
-      <main className="flex flex-row flex-grow">
-        <div className="flex flex-col basis-1/2 bg-gray-700 rounded">
-          <h2>{homeTeamInfo.teamName}</h2>
-          <StatTable rows={homeTeamTotal.reverse()} columns={columns} />
-        </div>
-        <div className="flex flex-col basis-1/2 bg-gray-700 rounded">
-          <h2>{awayTeamInfo.teamName}</h2>
-          <StatTable rows={awayTeamTotal.reverse()} columns={columns} />
-        </div>
+      <h1>
+        {" "}
+        Estimated Final Score (based of current roster and lifetime stats):{" "}
+      </h1>
+      <main className="">
+        <h2>{homeTeamInfo.teamName}</h2>
+        <p>{homeTeamTotal[0]["g pg"]}</p>
+        <h2>{awayTeamInfo.teamName}</h2>
+        <p>{awayTeamTotal[0]["g pg"]}</p>
       </main>
     </>
   );
