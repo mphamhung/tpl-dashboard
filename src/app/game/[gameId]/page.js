@@ -12,7 +12,7 @@ export default async function Page({ params }) {
 
   return (
     <Suspense>
-      <ScoreCard game={game} />
+      {/* <ScoreCard game={game} /> */}
       <Forecast game={game} />
       <PlayByPlay game={game} />
     </Suspense>

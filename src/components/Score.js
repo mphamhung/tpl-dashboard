@@ -18,8 +18,8 @@ export default async function Score({ game, teamId }) {
       justify="center"
       className={
         score > otherScore
-          ? "bg-gradient-to-l from-lime-700 to-transparent w-full h-full"
-          : ""
+          ? "bg-lime-700 w-full h-full"
+          : "bg-red-900 w-full h-full"
       }
     >
       {score}

@@ -11,7 +11,7 @@ const Home = () => {
   useEffect(() => {
     // wake api
     const queryApi = async () => {
-      let _ = await fetch("https://tplapp.onrender.com/");
+      const _ = await fetch("https://tplapp.onrender.com/");
       setApiReady(true);
     };
 
@@ -27,7 +27,7 @@ const Home = () => {
   }, [apiReady]);
 
   // This component doesn't actually render anything
-  return <>{apiReady ? <>ready</> : <>Loading ...</>}; </>;
+  return null;
 };
 
 export default Home;

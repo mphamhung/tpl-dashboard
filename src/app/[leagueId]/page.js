@@ -8,7 +8,7 @@ import { Suspense } from "react";
 export default async function Home({ params }) {
   return (
     <div>
-      <main className="justify-items-center">
+      <main className="">
         <Suspense fallback={<p>Loading...</p>}>
           <GamesList leagueId={params.leagueId} />
         </Suspense>
