@@ -19,7 +19,9 @@ export default async function Score({ game, teamId }) {
       className={
         score > otherScore
           ? "bg-lime-700 w-full h-full"
-          : "bg-red-900 w-full h-full"
+          : score == otherScore
+            ? "bg-grey-700 w-full h-full"
+            : "bg-red-900 w-full h-full"
       }
     >
       {score}
