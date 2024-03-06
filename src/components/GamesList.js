@@ -16,7 +16,7 @@ const GameCardRow = ({ game, name, teamId }) => (
     </div>
     <Link
       href={`/game/${game.id}/${teamId}`}
-      className="col-start-6 col-span-1 bg-slate-800 rounded-sm"
+      className="col-start-6 col-span-1 bg-slate-800 hover:bg-slate-700 rounded-sm"
     >
       {"->"}
     </Link>
@@ -40,7 +40,7 @@ const GameCard = ({ game }) => (
     <GameCardRow game={game} name={game.awayTeam} teamId={game.awayTeamId} />
     <Link
       href={`/game/${game.id}`}
-      className="row-span-1 row-start-6 col-start-3 col-span-2 border-2 rounded-sm p-1 text-center bg-slate-800"
+      className="row-span-1 row-start-6 col-start-3 col-span-2 border-2 rounded-sm p-1 text-center bg-slate-800 hover:bg-slate-700"
     >
       View Game
     </Link>
