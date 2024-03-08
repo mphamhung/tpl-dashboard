@@ -1,31 +1,8 @@
 "use client";
 import { Line, Bar, Scatter } from "react-chartjs-2";
 import { getGameEvents, getTeamInfo } from "@/lib/api-fetching";
+import Chart from "chart.js/auto";
 
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  Filler,
-} from "chart.js";
-
-ChartJS.register(
-  Filler,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -105,7 +82,6 @@ export default function PlayByPlay({ game }) {
   const allGoals = homeGoals.concat(awayGoals);
   allGoals.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
-  console.log(toDataGoals);
   toData.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
   const data = {
     labels: toData.map((e) => e.timestamp),
