@@ -10,11 +10,12 @@ export default async function Page({ params }) {
     (game) => Number(game.id) === Number(params.gameId)
   );
 
-  return (
-    <Suspense>
-      {/* <ScoreCard game={game} /> */}
-      <Forecast game={game} />
-      <PlayByPlay game={game} />
-    </Suspense>
-  );
+  return <PlayByPlay game={game} />;
+  // return (
+  //   <Suspense>
+  //     {/* <ScoreCard game={game} /> */}
+  //     <Forecast game={game} />
+  //     <PlayByPlay game={game} />
+  //   </Suspense>
+  // );
 }

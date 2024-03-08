@@ -27,7 +27,7 @@ export default async function Page({ params }) {
   ];
   return (
     <Suspense>
-      <h1>{teamInfo.teamName}</h1>
+      {/* <h1>{teamInfo.teamName}</h1> */}
       <StatTable rows={rows} columns={columns} />
       <StackedBar rows={rows} keys={["% GC", "% T"]} sort_key="% total" />
       <ScatterPlot rows={rows} x_key={"% GC"} y_key={"% T"} />

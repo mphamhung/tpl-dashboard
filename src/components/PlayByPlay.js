@@ -25,9 +25,19 @@ ChartJS.register(
   Legend
 );
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 
 const endPos = ["Goal", "TA", "Drop", "D"];
+const colorMap = {
+  Goal: "green",
+  TA: "orange",
+  Drop: "red",
+  D: "blue",
+};
 
+const footer = (tooltipItems) => {
+  return tooltipItems[0].raw["playerName"];
+};
 export default function PlayByPlay({ game }) {
   const [homeTeamEvents, setHomeTeamEvents] = useState([]);
   const [awayTeamEvents, setAwayTeamEvents] = useState([]);
@@ -54,6 +64,7 @@ export default function PlayByPlay({ game }) {
 
   var toData = [];
   var currPos = [];
+  var maxPasses = 10;
   allEvents.forEach((event) => {
     currPos.push(event);
     if (endPos.includes(event.eventType)) {
@@ -61,14 +72,18 @@ export default function PlayByPlay({ game }) {
         passe: currPos.length,
         results: event.eventType,
         teamId: event.teamId,
+        playerName: event.player.playerName,
         deltaT: new Date(event.timestamp) - new Date(currPos[0].timestamp),
-        timestamp: currPos[0].timestamp,
+        timestamp: (
+          new Date(currPos[0].timestamp).getMinutes() +
+          new Date(currPos[0].timestamp).getSeconds() / 60
+        ).toFixed(3),
       });
+      maxPasses = currPos.length > maxPasses ? currPos.length : maxPasses;
       currPos = [];
     }
   });
 
-  console.log(toData);
   const homeGoals = homeTeamEvents.filter((event) => event.eventType == "Goal");
   const awayGoals = awayTeamEvents.filter((event) => event.eventType == "Goal");
 
@@ -77,83 +92,65 @@ export default function PlayByPlay({ game }) {
 
   const data = {
     labels: toData.map((e) => e.timestamp),
-    datasets: [
-      {
-        label: "home",
+    datasets: endPos.map((event) => {
+      return {
+        label: event,
         data: toData
-          .filter((e) => e.teamId == game.homeTeamId)
+          .filter((e) => e.results == event)
           .map((e) => {
-            return { x: e.timestamp, y: e.passe };
+            return {
+              x: e.timestamp,
+              y: e.teamId == game.homeTeamId ? e.passe : e.passe * -1,
+              playerName: e.playerName,
+            };
           }),
         backgroundColor: toData
-          .filter((e) => e.teamId == game.homeTeamId)
+          .filter((e) => e.results == event)
           .map((e) => {
-            if (e.results == "Goal") {
-              return "green";
-            } else if (e.results == "TA" || e.results == "Drop") {
-              return "orange";
-            } else if (e.results == "D") {
-              return "blue";
-            } else {
-              return "grey";
-            }
+            return colorMap[event];
           }),
-      },
-      {
-        label: "away",
-        data: toData
-          .filter((e) => e.teamId == game.awayTeamId)
-          .map((e) => {
-            return { x: e.timestamp, y: e.passe * -1 };
-          }),
-        backgroundColor: toData
-          .filter((e) => e.teamId == game.awayTeamId)
-          .map((e) => {
-            if (e.results == "Goal") {
-              return "green";
-            } else if (e.results == "TA" || e.results == "Drop") {
-              return "orange";
-            } else if (e.results == "D") {
-              return "blue";
-            } else {
-              return "grey";
-            }
-          }),
-      },
-    ],
+        parsing: {
+          xAxisKey: "y",
+          yAxisKey: "x",
+        },
+        barThickness: 6,
+        barPercentage: 0.5,
+      };
+    }),
   };
-  // let goalsOverTime = [];
-  // let score = 0;
-  // let startTime =
-  //   allGoals.length > 0 ? new Date(allGoals[0].timestamp).getTime() : 0;
-  // allGoals.forEach((event) => {
-  //   score += event.teamId == game.homeTeamId ? 1 : -1;
-  //   goalsOverTime.push({ ts: new Date(event.timestamp), s: score });
-  // });
-  // const data = {
-  //   labels: goalsOverTime.map(
-  //     (event) =>
-  //       String(event.ts.getMinutes()) + ":" + String(event.ts.getSeconds())
-  //   ), // Extract date part only
-  //   datasets: [
-  //     {
-  //       label: "",
-  //       data: goalsOverTime.map((event) => ({
-  //         x: event.ts.getTime() - startTime,
-  //         y: event.s,
-  //       })),
-  //       backgroundColor: goalsOverTime.map((event) =>
-  //         event.s > 0 ? "blue" : "red"
-  //       ),
-  //       borderWidth: 2,
-  //     },
-  //   ],
-  // };
 
-  const options = {};
+  const options = {
+    plugins: {
+      tooltip: {
+        callbacks: {
+          footer: footer,
+        },
+      },
+    },
+    indexAxis: "y",
+    scales: {
+      xAxis: {
+        ticks: {
+          display: false,
+        },
+        min: -maxPasses,
+        max: maxPasses,
+      },
+      yAxis: {
+        display: false,
+        ticks: {
+          display: false,
+        },
+      },
+    },
+  };
+  const w = 300;
+  const h = 600;
   return (
     <>
-      <Bar data={data} options={options} />
+      <div className="flex flex-col">
+        <Bar height={h} width={w} data={data} options={options} />
+      </div>
       {/* TODO MAKE IT A DOUBLE LINE GRAPH */}
     </>
   );
