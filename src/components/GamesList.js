@@ -7,8 +7,8 @@ import { tidy, mutate } from "@tidyjs/tidy";
 import { ScoreCard } from "@/components/ScoreCard";
 
 const GameCardRow = ({ game, name, teamId }) => (
-  <div className="grid grid-cols-6 row-span-2 col-span-4 rounded-lg bg-slate-900 p-2">
-    <div className="col-span-4 leading-6 line-clamp-2">{name}</div>
+  <div className="grid grid-cols-6 row-span-1 col-span-4 rounded-lg bg-slate-900 p-2">
+    <div className="col-span-4 leading-6 line-clamp-1">{name}</div>
     <div className="col-start-5 col-span-1">
       <Suspense>
         <Score game={game} teamId={teamId}></Score>
@@ -16,7 +16,7 @@ const GameCardRow = ({ game, name, teamId }) => (
     </div>
     <Link
       href={`/game/${game.id}/${teamId}`}
-      className="col-start-6 col-span-1 bg-slate-800 hover:bg-slate-700 rounded-sm"
+      className="col-start-6 col-span-1 bg-slate-800 hover:bg-slate-700 rounded-lg flex justify-center"
     >
       {"->"}
     </Link>
@@ -24,7 +24,7 @@ const GameCardRow = ({ game, name, teamId }) => (
 );
 
 const GameCard = ({ game }) => (
-  <div className="grid grid-rows-6 grid-cols-4 border-2 h-42 rounded-lg gap-2 bg-slate-400 p-1">
+  <div className="grid grid-rows-4 grid-cols-4 border-2 h-auto rounded-lg gap-1 bg-slate-700 p-1">
     <div className="grid grid-cols-4 row-span-1 col-span-4">
       <div>
         {new Date(game.date).toLocaleDateString("en-US", {
@@ -38,11 +38,12 @@ const GameCard = ({ game }) => (
     </div>
     <GameCardRow game={game} name={game.homeTeam} teamId={game.homeTeamId} />
     <GameCardRow game={game} name={game.awayTeam} teamId={game.awayTeamId} />
+    <div></div>
     <Link
       href={`/game/${game.id}`}
-      className="row-span-1 row-start-6 col-start-3 col-span-2 border-2 rounded-sm p-1 text-center bg-slate-800 hover:bg-slate-700"
+      className="flex row-span-1 row-start-4 col-start-3 col-span-2 border-2 rounded-lg p-1 justify-center leading-6 bg-slate-800 hover:bg-slate-700"
     >
-      View Game
+      <div>View Game</div>
     </Link>
   </div>
 );

@@ -25,7 +25,7 @@ const EVENT_MAPPING = {
 };
 
 function gameEventSequenceToRows(game_events_sequence) {
-  var stats_summary = {};
+  const stats_summary = {};
   for (const event of game_events_sequence) {
     if (!(event.gameId in stats_summary)) {
       stats_summary[event.gameId] = {};
@@ -50,7 +50,7 @@ function gameEventSequenceToRows(game_events_sequence) {
     ] += 1;
   }
 
-  var data = [];
+  const data = [];
   Object.keys(stats_summary).map((gameId) => {
     Object.keys(stats_summary[gameId]).map((playerId) => {
       data.push(stats_summary[gameId][playerId]);
@@ -106,14 +106,14 @@ function preprocess(game_rows, filter_func) {
 
   rows = tidy(rows, filter(filter_func));
 
-  var graph = {};
+  const graph = {};
 
   return [rows, graph];
 }
 
 export async function GamesMetadata() {
   const game_metadata = await getGamesMetadata();
-  let values = game_metadata.map((row) => [
+  const values = game_metadata.map((row) => [
     row.id,
     row.leagueId,
     new Date(row.date),
@@ -123,7 +123,7 @@ export async function GamesMetadata() {
     row.awayTeam,
     row.homeTeam,
   ]);
-  let sql =
+  const sql =
     "INSERT IGNORE INTO GAME_METADATA (gameId, leagueId, date, time, awayTeamId, homeTeamId, awayTeam, homeTeam) VALUES ?";
   connection.query(sql, [values], (err, result) => {
     if (err) throw err;
@@ -131,8 +131,8 @@ export async function GamesMetadata() {
   });
 }
 export async function GetLeagueIds() {
-  let sql = "SELECT DISTINCT leagueId FROM GAME_METADATA;";
-  let results = await connection
+  const sql = "SELECT DISTINCT leagueId FROM GAME_METADATA;";
+  const results = await connection
     .promise()
     .query(sql)
     .then(([results, fields]) => {
@@ -142,8 +142,8 @@ export async function GetLeagueIds() {
 }
 
 export async function GetGameLeagueId(gameIds) {
-  let sql = `SELECT * FROM GAME_METADATA WHERE gameId IN (${gameIds});`;
-  let results = await connection
+  const sql = `SELECT * FROM GAME_METADATA WHERE gameId IN (${gameIds});`;
+  const results = await connection
     .promise()
     .query(sql)
     .then(([results, fields]) => {
@@ -154,12 +154,13 @@ export async function GetGameLeagueId(gameIds) {
 }
 
 export async function GameTable(gameId, teamId, date = null) {
-  let today = new Date();
-  let game_date = new Date(date);
-  let game_is_today =
-    today.getDate() === game_date.getDate() &&
+  const today = new Date();
+  const game_date = new Date(date);
+  const game_is_today =
+    (today.getDate() === game_date.getDate() ||
+      today.getDate() === game_date.getDate() + 1) &&
     today.getMonth() === game_date.getMonth();
-  let results = await connection
+  const results = await connection
     .promise()
     .query(
       `select * from GAME_ROWS where gameId = ${gameId} and teamId = ${teamId};`
@@ -175,11 +176,11 @@ export async function GameTable(gameId, teamId, date = null) {
       }
       if (game_is_today || results.length == 0) {
         return getGameEvents(gameId, teamId).then((events) => {
-          let rows = gameEventSequenceToRows(events);
-          let values = rows.map((row) => Object.values(row));
+          const rows = gameEventSequenceToRows(events);
+          const values = rows.map((row) => Object.values(row));
           if (values.length > 0) {
             // let sql = "INSERT IGNORE INTO GAME_ROWS (name, gameId, playerId, teamId, goals, assists, second_assists, blocks, throwaways, drops, other_passes) VALUES ?"
-            let sql = `INSERT INTO GAME_ROWS (name, gameId, playerId, teamId, goals, assists, second_assists, blocks, throwaways, drops, other_passes)
+            const sql = `INSERT INTO GAME_ROWS (name, gameId, playerId, teamId, goals, assists, second_assists, blocks, throwaways, drops, other_passes)
                             VALUES ?
                             ON DUPLICATE KEY UPDATE 
                             name = VALUES(name), 
@@ -205,18 +206,18 @@ export async function GameTable(gameId, teamId, date = null) {
       }
     });
 
-  let [rows, graph] = preprocess(results, (d) => true);
+  const [rows, graph] = preprocess(results, (d) => true);
 
   return rows;
 }
 
 export async function PlayerGameEvents(playerId, use_cache) {
-  let results = await connection
+  const results = await connection
     .promise()
     .query(`select * from GAME_ROWS where playerId = ${playerId};`)
     .then(async ([results, fields]) => {
       if (!use_cache) {
-        let rows = await Promise.all(
+        const rows = await Promise.all(
           results.map(async ({ gameId, teamId }) => {
             return GameTable(gameId, teamId);
           })
@@ -231,7 +232,7 @@ export async function PlayerGameEvents(playerId, use_cache) {
 }
 
 export async function AllGameEvents() {
-  let results = await connection
+  const results = await connection
     .promise()
     .query(`select * from GAME_ROWS;`)
     .then(([results, fields]) => {

@@ -8,6 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import React from "react";
 
+import SortBy from "sort-by";
 export default function StatTable({ rows, columns }) {
   const [hydrated, setHydrated] = React.useState(false);
   const [sortKey, setSortKey] = React.useState("");
@@ -21,9 +22,7 @@ export default function StatTable({ rows, columns }) {
     // Returns null on first render, so the client and server match
     return null;
   }
-  rows.sort(function (a, b) {
-    return a[sortKey] - b[sortKey];
-  });
+  rows.sort(SortBy(sortKey));
   if (reverse) {
     rows.reverse();
   }
@@ -32,43 +31,29 @@ export default function StatTable({ rows, columns }) {
       <Table size="small" aria-label="customized table">
         <TableHead>
           <TableRow>
-            {columns.map((key) => {
+            {columns.map((key, idx) => {
               if (key == "name") {
                 return (
                   <TableCell
                     style={{ position: "sticky", left: 0, background: "white" }}
-                    key={key}
+                    key={String(key) + String(idx)}
                     onClick={(_) => {
                       setSortKey(key);
-                      setReverse(!reverse);
+                      setReverse(sortKey == key ? !reverse : reverse);
                     }}
                   >
                     {key}
                   </TableCell>
                 );
-              } else if (key == "") {
-                return (
-                  <TableCell
-                    key={key}
-                    align="left"
-                    style={{ padding: "5px" }}
-                    onClick={(_) => {
-                      setSortKey(key);
-                      setReverse(!reverse);
-                    }}
-                  >
-                    Passes
-                  </TableCell>
-                );
               } else {
                 return (
                   <TableCell
-                    key={key}
+                    key={String(key) + String(idx)}
                     align="left"
                     style={{ padding: "5px" }}
                     onClick={(_) => {
                       setSortKey(key);
-                      setReverse(!reverse);
+                      setReverse(sortKey == key ? !reverse : reverse);
                     }}
                   >
                     {key}
@@ -80,12 +65,14 @@ export default function StatTable({ rows, columns }) {
         </TableHead>
         <TableBody>
           {rows &&
-            rows.map((row) => (
+            rows.map((row, idx) => (
               <TableRow
                 className="hover:bg-gray-200"
-                key={row["gameId"] + row["teamId"] + row["playerId"]}
+                key={
+                  row["gameId"] + row["teamId"] + row["playerId"] + String(idx)
+                }
               >
-                {columns.map((key) => {
+                {columns.map((key, idx) => {
                   if (key == "name") {
                     return (
                       <TableCell
@@ -94,7 +81,7 @@ export default function StatTable({ rows, columns }) {
                           left: 0,
                           background: "white",
                         }}
-                        key={key}
+                        key={String(key) + String(idx)}
                         align="left"
                       >
                         <a href={"/player/" + row["playerId"]}>{row[key]}</a>
@@ -102,19 +89,23 @@ export default function StatTable({ rows, columns }) {
                     );
                   } else if (key == "gameId") {
                     return (
-                      <TableCell key={key} align="left">
+                      <TableCell key={String(key) + String(idx)} align="left">
                         <a href={"/game/" + row["gameId"]}>{row[key]}</a>
                       </TableCell>
                     );
                   } else if (key == "date") {
                     return (
-                      <TableCell key={key} align="left">
-                        {row[key].toDateString()}
+                      <TableCell key={String(key) + String(idx)} align="left">
+                        {new Date(row[key]).toLocaleDateString("en-US", {
+                          month: "numeric",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
                       </TableCell>
                     );
                   } else {
                     return (
-                      <TableCell key={key} align="left">
+                      <TableCell key={String(key) + String(idx)} align="left">
                         {row[key]}
                       </TableCell>
                     );

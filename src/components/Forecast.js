@@ -146,17 +146,15 @@ export default async function Forecast({ game }) {
   );
   let columns = ["g pg"];
   return (
-    <>
-      <h1>
-        {" "}
-        Estimated Final Score (based of current roster and lifetime stats):{" "}
-      </h1>
-      <main className="">
-        <h2>{homeTeamInfo.teamName}</h2>
-        <p>{homeTeamTotal[0]["g pg"]}</p>
-        <h2>{awayTeamInfo.teamName}</h2>
-        <p>{awayTeamTotal[0]["g pg"]}</p>
-      </main>
-    </>
+    <div className="grid grid-cols-4 rounded-lg bg-gray-700">
+      <div className="col-span-1 line-clamp-2">{homeTeamInfo.teamName}</div>
+      <div className="col-span-1 line-clamp-2">{homeTeamTotal[0]["g pg"]}</div>
+      <div className="col-span-1 line-clamp-2 text-right">
+        {awayTeamTotal[0]["g pg"]}
+      </div>
+      <div className="col-span-1 line-clamp-2 text-right">
+        {awayTeamInfo.teamName}
+      </div>
+    </div>
   );
 }
