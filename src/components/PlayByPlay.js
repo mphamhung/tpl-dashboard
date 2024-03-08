@@ -12,9 +12,11 @@ import {
   Tooltip,
   Legend,
   LineElement,
+  Filler,
 } from "chart.js";
 
 ChartJS.register(
+  Filler,
   CategoryScale,
   LinearScale,
   BarElement,
@@ -65,6 +67,9 @@ export default function PlayByPlay({ game }) {
   var toData = [];
   var currPos = [];
   var maxPasses = 10;
+  var toDataGoals = [];
+  var sumGoals = 0;
+
   allEvents.forEach((event) => {
     currPos.push(event);
     if (endPos.includes(event.eventType)) {
@@ -80,6 +85,16 @@ export default function PlayByPlay({ game }) {
         ).toFixed(3),
       });
       maxPasses = currPos.length > maxPasses ? currPos.length : maxPasses;
+      if (event.eventType == "Goal") {
+        sumGoals += event.teamId == game.homeTeamId ? -1 : 1;
+        toDataGoals.push({
+          x: (
+            new Date(currPos[0].timestamp).getMinutes() +
+            new Date(currPos[0].timestamp).getSeconds() / 60
+          ).toFixed(3),
+          y: sumGoals,
+        });
+      }
       currPos = [];
     }
   });
@@ -90,33 +105,51 @@ export default function PlayByPlay({ game }) {
   const allGoals = homeGoals.concat(awayGoals);
   allGoals.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
+  console.log(toDataGoals);
+  toData.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
   const data = {
     labels: toData.map((e) => e.timestamp),
-    datasets: endPos.map((event) => {
-      return {
-        label: event,
-        data: toData
-          .filter((e) => e.results == event)
-          .map((e) => {
-            return {
-              x: e.timestamp,
-              y: e.teamId == game.homeTeamId ? e.passe : e.passe * -1,
-              playerName: e.playerName,
-            };
-          }),
-        backgroundColor: toData
-          .filter((e) => e.results == event)
-          .map((e) => {
-            return colorMap[event];
-          }),
+    datasets: endPos
+      .map((event) => {
+        return {
+          label: event,
+          data: toData
+            .filter((e) => e.results == event)
+            .map((e) => {
+              return {
+                x: e.timestamp,
+                y: e.teamId == game.homeTeamId ? e.passe * -1 : e.passe,
+                playerName: e.playerName,
+              };
+            }),
+          backgroundColor: toData
+            .filter((e) => e.results == event)
+            .map((e) => {
+              return colorMap[event];
+            }),
+          parsing: {
+            xAxisKey: "y",
+            yAxisKey: "x",
+          },
+          barThickness: 6,
+          barPercentage: 0.5,
+        };
+      })
+      .concat({
+        label: "Score Differential",
+        data: toDataGoals,
+        backgroundColor: "rgba(255,100,1,0.5)",
+        radius: 0.1,
+        type: "line",
+        fill: {
+          below: "rgba(255,100,1,0.5)",
+          target: { value: 0 },
+        },
         parsing: {
           xAxisKey: "y",
           yAxisKey: "x",
         },
-        barThickness: 6,
-        barPercentage: 0.5,
-      };
-    }),
+      }),
   };
 
   const options = {
@@ -125,6 +158,12 @@ export default function PlayByPlay({ game }) {
         callbacks: {
           footer: footer,
         },
+      },
+      filler: {
+        propagate: false,
+      },
+      "samples-filler-analyser": {
+        target: "chart-analyser",
       },
     },
     indexAxis: "y",
@@ -145,13 +184,10 @@ export default function PlayByPlay({ game }) {
     },
   };
   const w = 300;
-  const h = 600;
+  const h = 800;
   return (
-    <>
-      <div className="flex flex-col">
-        <Bar height={h} width={w} data={data} options={options} />
-      </div>
-      {/* TODO MAKE IT A DOUBLE LINE GRAPH */}
-    </>
+    <div className="flex flex-col">
+      <Bar height={h} width={w} data={data} options={options} />
+    </div>
   );
 }
