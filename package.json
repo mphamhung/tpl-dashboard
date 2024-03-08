@@ -29,6 +29,7 @@
     "react-dom": "^18",
     "recharts": "^2.10.1",
     "serverless-mysql": "^1.5.5",
+    "sort-by": "^1.2.0",
     "styled-components": "^6.1.1",
     "tls": "^0.0.1"
   },
