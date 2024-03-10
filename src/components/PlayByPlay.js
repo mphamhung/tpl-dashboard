@@ -55,7 +55,7 @@ export default function PlayByPlay({ game }) {
     currPos.push(event);
     if (endPos.includes(event.eventType)) {
       toData.push({
-        passe: currPos.length,
+        passe: event.eventType == "D" ? -1 : currPos.length,
         results: event.eventType,
         teamId: event.teamId,
         playerName: event.player.playerName,
@@ -73,6 +73,9 @@ export default function PlayByPlay({ game }) {
           x: new Date(currPos[0].timestamp),
           y: sumGoals,
         });
+        console.log(event.teamId, game.homeTeamId);
+        console.log(event);
+        console.log(sumGoals);
       }
       currPos = [];
     }
@@ -86,7 +89,6 @@ export default function PlayByPlay({ game }) {
 
   toData.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
   const data = {
-    labels: toData.map((e) => e.timestamp),
     datasets: endPos
       .map((event) => {
         return {
@@ -117,7 +119,7 @@ export default function PlayByPlay({ game }) {
         label: "Score Differential",
         data: toDataGoals,
         backgroundColor: "rgba(255,100,1,0.5)",
-        radius: 0.1,
+        radius: 1,
         type: "line",
         fill: {
           below: "rgba(255,100,1,0.5)",
@@ -155,12 +157,14 @@ export default function PlayByPlay({ game }) {
         stacked: true,
       },
       yAxis: {
-        display: false,
-        ticks: {
-          display: false,
-        },
         stacked: true,
         type: "time",
+        time: {
+          displayFormats: {
+            quarter: "mm:ss",
+          },
+        },
+        reverse: true,
       },
     },
   };
