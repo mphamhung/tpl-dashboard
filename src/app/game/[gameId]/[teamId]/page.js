@@ -6,13 +6,15 @@ import { Suspense } from "react";
 
 export default async function Page({ params }) {
   // const events = await getGameEvents(params.gameId, params.teamId)
-  const [game_metadata, _] = await GetGameLeagueId([params.gameId]);
+  const [[game_metadata, _], teamInfo] = await Promise.all([
+    GetGameLeagueId([params.gameId]),
+    getTeamInfo(params.teamId),
+  ]);
   const rows = await GameTable(
     params.gameId,
     params.teamId,
     game_metadata.date
   );
-  const teamInfo = await getTeamInfo(params.teamId);
   // const [rows, _] = preprocess(events, (d) => true)
   const columns = [
     "name",

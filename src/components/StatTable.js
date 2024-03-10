@@ -109,7 +109,11 @@ export default function StatTable({ rows, columns }) {
                     );
                   } else {
                     return (
-                      <TableCell key={String(key) + String(idx)} align="left">
+                      <TableCell
+                        key={String(key) + String(idx)}
+                        align="left"
+                        className="h-full"
+                      >
                         {row[key]}
                       </TableCell>
                     );

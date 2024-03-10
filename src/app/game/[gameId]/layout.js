@@ -2,7 +2,12 @@ import { getGamesMetadata } from "@/lib/api-fetching";
 import TeamBadges from "@/components/TeamBadges";
 import { ScoreCard } from "@/components/ScoreCard";
 
-export default async function GamePageTemplate({ children, params }) {
+export default async function GamePageTemplate({
+  children,
+  params,
+  awayTeam,
+  homeTeam,
+}) {
   const game_metadata = await getGamesMetadata();
   const [game, _] = game_metadata.filter(
     (game) => Number(game.id) === Number(params.gameId)
@@ -30,6 +35,8 @@ export default async function GamePageTemplate({ children, params }) {
       <section>
         {/* Include shared UI here e.g. a header or sidebar */}
         {children}
+        {homeTeam}
+        {awayTeam}
       </section>
     </>
   );

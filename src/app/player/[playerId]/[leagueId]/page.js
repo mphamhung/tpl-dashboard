@@ -4,7 +4,7 @@ import { ConstructionOutlined } from "@mui/icons-material";
 import { tidy, first, mutate, leftJoin, distinct } from "@tidyjs/tidy";
 import LeagueBadges from "@/components/LeagueBadges";
 import Link from "next/link";
-
+import StatsAcrossTime from "@/components/StatsAcrossTime";
 export default async function Page({ params }) {
   var rows = await PlayerGameEvents(params.playerId);
   const game_league_mapping = await GetGameLeagueId(
@@ -39,6 +39,7 @@ export default async function Page({ params }) {
   return (
     <>
       <StatTable rows={rows.reverse()} columns={columns} />
+      <StatsAcrossTime rows={rows} />
     </>
   );
 }

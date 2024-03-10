@@ -2,7 +2,7 @@
 import { Line, Bar, Scatter } from "react-chartjs-2";
 import { getGameEvents, getTeamInfo } from "@/lib/api-fetching";
 import Chart from "chart.js/auto";
-
+import "chartjs-adapter-moment";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -25,10 +25,14 @@ export default function PlayByPlay({ game }) {
 
   useEffect(() => {
     const fetchGameEvents = async () => {
-      const homeEvents = await getGameEvents(game.id, game.homeTeamId);
-      const awayEvents = await getGameEvents(game.id, game.awayTeamId);
-      const homeTeamInfo = await getTeamInfo(game.homeTeamId);
-      const awayTeamInfo = await getTeamInfo(game.awayTeamId);
+      const [homeEvents, awayEvents, homeTeamInfo, awayTeamInfo] =
+        await Promise.all([
+          getGameEvents(game.id, game.homeTeamId),
+          getGameEvents(game.id, game.awayTeamId),
+          getTeamInfo(game.homeTeamId),
+          getTeamInfo(game.awayTeamId),
+        ]);
+
       setHomeTeamEvents(homeEvents);
       setAwayTeamEvents(awayEvents);
       setHomeTeamInfo(homeTeamInfo);
@@ -56,19 +60,17 @@ export default function PlayByPlay({ game }) {
         teamId: event.teamId,
         playerName: event.player.playerName,
         deltaT: new Date(event.timestamp) - new Date(currPos[0].timestamp),
-        timestamp: (
-          new Date(currPos[0].timestamp).getMinutes() +
-          new Date(currPos[0].timestamp).getSeconds() / 60
-        ).toFixed(3),
+        timestamp:
+          event.eventType == "D"
+            ? toData[toData.length - 1].timestamp
+            : new Date(currPos[0].timestamp),
       });
+
       maxPasses = currPos.length > maxPasses ? currPos.length : maxPasses;
       if (event.eventType == "Goal") {
         sumGoals += event.teamId == game.homeTeamId ? -1 : 1;
         toDataGoals.push({
-          x: (
-            new Date(currPos[0].timestamp).getMinutes() +
-            new Date(currPos[0].timestamp).getSeconds() / 60
-          ).toFixed(3),
+          x: new Date(currPos[0].timestamp),
           y: sumGoals,
         });
       }
@@ -150,12 +152,15 @@ export default function PlayByPlay({ game }) {
         },
         min: -maxPasses,
         max: maxPasses,
+        stacked: true,
       },
       yAxis: {
         display: false,
         ticks: {
           display: false,
         },
+        stacked: true,
+        type: "time",
       },
     },
   };
