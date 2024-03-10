@@ -2,17 +2,21 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const defaultLeagueId = "778";
-
 const Home = () => {
   const router = useRouter();
-  const [apiReady, setApiReady] = useState(false);
-
+  const [latestLeagueId, setLatestLeagueId] = useState(null);
   useEffect(() => {
     // wake api
     const queryApi = async () => {
-      const _ = await fetch("https://tplapp.onrender.com/");
-      setApiReady(true);
+      const res = await fetch("https://tplapp.onrender.com/teams");
+      const teams = await res.json();
+      let maxLeagueId = -1;
+      teams.forEach((element) => {
+        if (Number(element.leagueId) > maxLeagueId) {
+          maxLeagueId = Number(element.leagueId);
+        }
+      });
+      setLatestLeagueId(maxLeagueId);
     };
 
     queryApi();
@@ -20,11 +24,11 @@ const Home = () => {
 
   useEffect(() => {
     // Perform the redirect
-    if (apiReady) {
+    if (latestLeagueId) {
       console.log("api is reqdy!");
-      router.push(`/${defaultLeagueId}`); // Redirect to '/new-route'
+      router.push(`/${latestLeagueId}`); // Redirect to '/new-route'
     }
-  }, [apiReady]);
+  }, [latestLeagueId]);
 
   // This component doesn't actually render anything
   return null;

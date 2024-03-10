@@ -149,6 +149,5 @@ export function StackedBar({ rows, keys, sort_key }) {
       },
     },
   };
-  console.log(data);
   return <Bar data={data} options={options} />;
 }

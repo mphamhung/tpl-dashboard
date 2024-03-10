@@ -26,7 +26,7 @@ export default async function Page({ params }) {
     "% pass",
   ];
   return (
-    <Suspense>
+    <>
       {/* <h1>{teamInfo.teamName}</h1> */}
       <StatTable rows={rows} columns={columns} />
       <StackedBar rows={rows} keys={["% GC", "% T"]} sort_key="% total" />
@@ -37,6 +37,6 @@ export default async function Page({ params }) {
         sort_key="other_passes"
       />
       <StackedBar rows={rows} keys={["blocks"]} sort_key="blocks" />
-    </Suspense>
+    </>
   );
 }

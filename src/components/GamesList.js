@@ -10,13 +10,13 @@ const GameCardRow = ({ game, name, teamId }) => (
   <div className="grid grid-cols-6 row-span-1 col-span-4 rounded-lg bg-slate-900 p-2">
     <div className="col-span-4 leading-6 line-clamp-1">{name}</div>
     <div className="col-start-5 col-span-1">
-      <Suspense>
+      <Suspense fallback={"*"}>
         <Score game={game} teamId={teamId}></Score>
       </Suspense>
     </div>
     <Link
       href={`/game/${game.id}/${teamId}`}
-      className="col-start-6 col-span-1 bg-slate-800 hover:bg-slate-700 rounded-lg flex justify-center"
+      className="col-start-6 col-span-1 bg-slate-800 hover:bg-slate-700 rounded-r-lg flex justify-center"
     >
       {"->"}
     </Link>
@@ -24,7 +24,7 @@ const GameCardRow = ({ game, name, teamId }) => (
 );
 
 const GameCard = ({ game }) => (
-  <div className="grid grid-rows-4 grid-cols-4 border-2 h-auto rounded-lg gap-1 bg-slate-700 p-1">
+  <div className="grid grid-rows-4 grid-cols-4 h-auto rounded-lg gap-1 bg-slate-700 p-1">
     <div className="grid grid-cols-4 row-span-1 col-span-4">
       <div>
         {new Date(game.date).toLocaleDateString("en-US", {
@@ -41,7 +41,7 @@ const GameCard = ({ game }) => (
     <div></div>
     <Link
       href={`/game/${game.id}`}
-      className="flex row-span-1 row-start-4 col-start-3 col-span-2 border-2 rounded-lg p-1 justify-center leading-6 bg-slate-800 hover:bg-slate-700"
+      className="flex row-span-1 row-start-4 col-start-3 border-2 border-slate-600 col-span-2 rounded-lg p-1 justify-center leading-6 bg-slate-800 hover:bg-slate-700"
     >
       <div>View Game</div>
     </Link>

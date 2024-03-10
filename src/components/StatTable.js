@@ -7,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import React from "react";
-
+import { tidy, mutate } from "@tidyjs/tidy";
 import SortBy from "sort-by";
 export default function StatTable({ rows, columns }) {
   const [hydrated, setHydrated] = React.useState(false);
@@ -56,7 +56,7 @@ export default function StatTable({ rows, columns }) {
                       setReverse(sortKey == key ? !reverse : reverse);
                     }}
                   >
-                    {key}
+                    {key.replace("_", " ")}
                   </TableCell>
                 );
               }
@@ -67,7 +67,11 @@ export default function StatTable({ rows, columns }) {
           {rows &&
             rows.map((row, idx) => (
               <TableRow
-                className="hover:bg-gray-200"
+                className={
+                  idx % 2
+                    ? " bg-gray-200 hover:bg-gray-200"
+                    : "bg-gray-100 hover:bg-gray-200"
+                }
                 key={
                   row["gameId"] + row["teamId"] + row["playerId"] + String(idx)
                 }
@@ -79,8 +83,8 @@ export default function StatTable({ rows, columns }) {
                         style={{
                           position: "sticky",
                           left: 0,
-                          background: "white",
                         }}
+                        className={idx % 2 ? " bg-gray-200" : "bg-gray-100"}
                         key={String(key) + String(idx)}
                         align="left"
                       >

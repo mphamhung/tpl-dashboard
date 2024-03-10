@@ -1,10 +1,13 @@
+"use server";
 import { gridColumnsTotalWidthSelector } from "@mui/x-data-grid";
 import { GameTable } from "@/lib/preprocess";
 import { tidy, sum } from "@tidyjs/tidy";
 
 export async function ScoreCard({ gameId, homeTeamId, awayTeamId }) {
-  const homeTeamEvents = await GameTable(gameId, homeTeamId);
-  const awayTeamEvents = await GameTable(gameId, awayTeamId);
+  const [homeTeamEvents, awayTeamEvents] = await Promise.all([
+    GameTable(gameId, homeTeamId),
+    GameTable(gameId, awayTeamId),
+  ]);
 
   const homeScore = tidy(homeTeamEvents, sum("goals"));
   const awayScore = tidy(awayTeamEvents, sum("goals"));
@@ -14,10 +17,10 @@ export async function ScoreCard({ gameId, homeTeamId, awayTeamId }) {
       <div
         className={
           homeScore > awayScore
-            ? "basis-1/2 bg-gradient-to-r from-lime-700 to-transparent text-center"
+            ? "basis-1/2 bg-lime-700 text-center rounded-l-md"
             : homeScore == awayScore
-              ? "basis-1/2 bg-gradient-to-r from-slate-700 to-transparent text-center"
-              : "basis-1/2 bg-gradient-to-r from-red-700 to-transparent text-center"
+              ? "basis-1/2 bg-slate-700 text-center rounded-l-md"
+              : "basis-1/2 bg-red-700 text-center rounded-l-md"
         }
       >
         {homeScore}
@@ -25,10 +28,10 @@ export async function ScoreCard({ gameId, homeTeamId, awayTeamId }) {
       <div
         className={
           homeScore < awayScore
-            ? "basis-1/2 bg-gradient-to-l from-lime-700 to-transparent text-center"
+            ? "basis-1/2 bg-lime-700 text-center rounded-r-md"
             : homeScore == awayScore
-              ? "basis-1/2 bg-gradient-to-l from-slate-700 to-transparent text-center"
-              : "basis-1/2 bg-gradient-to-l from-red-700 to-transparent text-center"
+              ? "basis-1/2 bg-slate-700 text-center rounded-r-md"
+              : "basis-1/2 bg-red-700 text-center rounded-r-md"
         }
       >
         {awayScore}
