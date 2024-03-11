@@ -1,7 +1,4 @@
 import { getGamesMetadata } from "@/lib/api-fetching";
-import { Suspense } from "react";
-import ScoreCard from "@/components/ScoreCard";
-import Forecast from "@/components/Forecast";
 import PlayByPlay from "@/components/PlayByPlay";
 
 export default async function Page({ params }) {
@@ -15,11 +12,4 @@ export default async function Page({ params }) {
       <PlayByPlay game={game} />
     </>
   );
-  // return (
-  //   <Suspense>
-  //     {/* <ScoreCard game={game} /> */}
-  //     <Forecast game={game} />
-  //     <PlayByPlay game={game} />
-  //   </Suspense>
-  // );
 }

@@ -45,6 +45,14 @@ export default function PlayByPlay({ game }) {
   const allEvents = homeTeamEvents.concat(awayTeamEvents);
   allEvents.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
+  var minDate = 0;
+  var maxDate = 0;
+  if (allEvents.length > 0) {
+    minDate = new Date(allEvents[0].timestamp);
+    maxDate = new Date(allEvents[allEvents.length - 1].timestamp);
+    minDate.setMinutes(minDate.getMinutes() - 1);
+    maxDate.setMinutes(maxDate.getMinutes() + 1);
+  }
   var toData = [];
   var currPos = [];
   var maxPasses = 10;
@@ -73,21 +81,11 @@ export default function PlayByPlay({ game }) {
           x: new Date(currPos[0].timestamp),
           y: sumGoals,
         });
-        console.log(event.teamId, game.homeTeamId);
-        console.log(event);
-        console.log(sumGoals);
       }
       currPos = [];
     }
   });
 
-  const homeGoals = homeTeamEvents.filter((event) => event.eventType == "Goal");
-  const awayGoals = awayTeamEvents.filter((event) => event.eventType == "Goal");
-
-  const allGoals = homeGoals.concat(awayGoals);
-  allGoals.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-  toData.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
   const data = {
     datasets: endPos
       .map((event) => {
@@ -161,18 +159,24 @@ export default function PlayByPlay({ game }) {
         type: "time",
         time: {
           displayFormats: {
-            quarter: "mm:ss",
+            second: "mm",
           },
         },
         reverse: true,
+        min: minDate,
+        max: maxDate,
       },
     },
   };
   const w = 300;
-  const h = 800;
+  const h = 1000;
   return (
-    <div className="flex flex-col">
-      <Bar height={h} width={w} data={data} options={options} />
-    </div>
+    <Bar
+      className="bg-black rounded-lg"
+      height={h}
+      width={w}
+      data={data}
+      options={options}
+    />
   );
 }

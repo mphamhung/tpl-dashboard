@@ -21,41 +21,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-export function BarContributions({ rows }) {
-  const [hydrated, setHydrated] = React.useState(false);
-  React.useEffect(() => {
-    setHydrated(true);
-  }, []);
-  if (!hydrated) {
-    // Returns null on first render, so the client and server match
-    return null;
-  }
-  rows
-    .sort(function (a, b) {
-      return a["% T"] + a["% GC"] - b["% T"] - b["% GC"];
-    })
-    .reverse();
-  const labels = rows.map((row) => {
-    return row["Name"];
-  });
-  const data = {
-    labels: labels,
-    datasets: [
-      {
-        label: "% GC",
-        data: rows.map((row) => row["% GC"]),
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-      },
-      {
-        label: "% Touches",
-        data: rows.map((row) => row["% T"]),
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
-      },
-    ],
-  };
-  return <Bar data={data} />;
-}
+import SortBy from "sort-by";
 
 export function ScatterPlot({ rows, x_key, y_key }) {
   const [hydrated, setHydrated] = React.useState(false);
@@ -94,7 +60,9 @@ export function ScatterPlot({ rows, x_key, y_key }) {
       },
     ],
   };
-  return <Scatter data={data} options={options} />;
+  return (
+    <Scatter className="bg-black rounded-lg" data={data} options={options} />
+  );
 }
 
 const colors = {
@@ -106,8 +74,8 @@ const colors = {
   throwaways: "rgba(255, 99, 132, 0.5)",
   drops: "rgba(255, 99, 132, 0.5)",
   other_passes: "rgba(255, 255, 132, 0.5)",
-  "% GC": "rgba(255, 99, 132, 0.5)",
-  "% T": "rgba(255, 255, 132, 0.5)",
+  "% Goal Contributions": "rgba(255, 99, 132, 0.5)",
+  "% Touches": "rgba(255, 255, 132, 0.5)",
 };
 export function StackedBar({ rows, keys, sort_key }) {
   const [hydrated, setHydrated] = React.useState(false);
@@ -119,11 +87,7 @@ export function StackedBar({ rows, keys, sort_key }) {
     return null;
   }
 
-  rows
-    .sort(function (a, b) {
-      return a[sort_key] - b[sort_key];
-    })
-    .reverse();
+  rows.sort(SortBy(sort_key)).reverse();
 
   const labels = rows.map((row) => {
     return row["name"];
@@ -149,5 +113,5 @@ export function StackedBar({ rows, keys, sort_key }) {
       },
     },
   };
-  return <Bar data={data} options={options} />;
+  return <Bar className="bg-black rounded-lg" data={data} options={options} />;
 }

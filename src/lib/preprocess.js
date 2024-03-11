@@ -81,7 +81,12 @@ function preprocess(game_rows, filter_func) {
     rows,
     groupBy(
       ["gameId", "teamId"],
-      [summarize({ total_gc: sum("GC"), total_touches: sum("other_passes") })],
+      [
+        summarize({
+          goal_contributions: sum("GC"),
+          total_touches: sum("other_passes"),
+        }),
+      ],
       groupBy.object({ single: true })
     )
   );
@@ -89,18 +94,17 @@ function preprocess(game_rows, filter_func) {
   rows = tidy(
     rows,
     mutate({
-      "% GC": (d) =>
-        (d["GC"] / totals[d["gameId"]][d["teamId"]]["total_gc"]).toFixed(2),
-      "% T": (d) =>
-        (
-          d["other_passes"] / totals[d["gameId"]][d["teamId"]]["total_touches"]
+      "% Goal Contributions": (d) =>
+        Number(
+          (d["GC"] * 100) /
+            totals[d["gameId"]][d["teamId"]]["goal_contributions"]
         ).toFixed(2),
-    })
-  );
-  rows = tidy(
-    rows,
-    mutate({
-      "% total": (d) => d["% GC"] * d["% T"],
+      "% Touches": (d) =>
+        Number(
+          (d["other_passes"] * 100) /
+            totals[d["gameId"]][d["teamId"]]["total_touches"]
+        ).toFixed(2),
+      participation: (d) => d["GC"] + d["other_passes"],
     })
   );
 

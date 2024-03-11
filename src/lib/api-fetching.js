@@ -1,3 +1,4 @@
+"use server";
 const serverUrl = process.env.serverUrl;
 
 export async function getGames(leagueId) {
@@ -26,7 +27,7 @@ export async function getGameEvents(gameId, teamId) {
 
   const fetched_data = await res.json();
 
-  var events = [];
+  const events = [];
   Object.keys(fetched_data).map((idx) => events.push(fetched_data[idx]));
   events.sort(function (a, b) {
     return a.sequence - b.sequence;
@@ -40,8 +41,10 @@ export async function getGameEventsByGameId(gameId) {
 
   const g = games.find((game) => game["id"] === gameId);
 
-  const homeTeamEvents = await getGameEvents(g.id, g.homeTeamId);
-  const awayTeamEvents = await getGameEvents(g.id, g.awayTeamId);
+  const [homeTeamEvents, awayTeamEvents] = await Promise.all([
+    getGameEvents(g.id, g.homeTeamId),
+    getGameEvents(g.id, g.awayTeamId),
+  ]);
 
   return [homeTeamEvents, awayTeamEvents];
 }
@@ -49,7 +52,7 @@ export async function getGameEventsByGameId(gameId) {
 export async function getAllGameEvents() {
   const games = await getGames();
 
-  var flattened_games = [];
+  const flattened_games = [];
   for (const game of games) {
     flattened_games.push({ gameId: game.id, teamId: game.awayTeamId });
     flattened_games.push({ gameId: game.id, teamId: game.homeTeamId });

@@ -4,7 +4,6 @@ import { GetGameLeagueId } from "../lib/preprocess";
 import Score from "./Score";
 import { Suspense } from "react";
 import { tidy, mutate } from "@tidyjs/tidy";
-import { ScoreCard } from "@/components/ScoreCard";
 
 const GameCardRow = ({ game, name, teamId }) => (
   <div className="grid grid-cols-6 row-span-1 col-span-4 rounded-lg bg-slate-900 p-2">
