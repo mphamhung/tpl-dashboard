@@ -1,10 +1,7 @@
-import StatTable from "@/components/StatTable";
 import { PlayerGameEvents, GetGameLeagueId } from "@/lib/preprocess";
-import { ConstructionOutlined } from "@mui/icons-material";
-import { tidy, first, distinct, leftJoin } from "@tidyjs/tidy";
-import LeagueBadges from "@/components/LeagueBadges";
-import Link from "next/link";
-
+import { tidy, distinct, leftJoin, first } from "@tidyjs/tidy";
+import { PlayerPageTabs } from "@/components/PlayerPageTabs";
+import { Suspense } from "react";
 export default async function PlayerPageLayout({ children, params }) {
   var rows = await PlayerGameEvents(params.playerId);
   const game_league_mapping = await GetGameLeagueId(
@@ -15,23 +12,15 @@ export default async function PlayerPageLayout({ children, params }) {
   rows = tidy(rows, leftJoin(game_league_mapping, { by: "gameId" }));
   const leagueIds = tidy(rows, distinct("leagueId")).map((row) => row.leagueId);
 
+  console.log(leagueIds);
   return (
     <>
-      <h1 className="flex-grow m2 bg-grey" justify="center">
-        <Link href={`/player/${params.playerId}`}>{playerName}</Link>
-      </h1>
-      <h1 className="flex-grow m2 bg-grey" justify="center">
-        Past Games
-      </h1>
-      <LeagueBadges
+      <PlayerPageTabs
+        playerName={playerName}
+        playerId={params.playerId}
         leagueIds={leagueIds}
-        prefix={`player/${params.playerId}`}
-        params={params}
       />
-      <section>
-        {/* Include shared UI here e.g. a header or sidebar */}
-        {children}
-      </section>
+      {children}
     </>
   );
 }

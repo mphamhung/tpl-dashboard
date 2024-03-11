@@ -19,14 +19,17 @@ function Row(props) {
   const { row, primary_columns, secondary_columns, defaultOpen } = props;
   const [open, setOpen] = useState(false);
 
+  const secondary_columns_processed = secondary_columns.filter(
+    (key) => key != "name"
+  );
   useEffect(() => {
     setOpen(defaultOpen);
   }, [defaultOpen]);
   return (
     <Fragment>
-      <TableRow>
+      <TableRow onClick={() => setOpen(!open)}>
         <TableCell>
-          <IconButton className="w-4 " onClick={() => setOpen(!open)}>
+          <IconButton className="w-4 ">
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
@@ -44,10 +47,12 @@ function Row(props) {
             timeout="auto"
             unmountOnExit
           >
-            <div className="grid grid-rows-3 grid-flow-col bg-slate-50">
-              {secondary_columns.map((key) => (
-                <div className="row-span-1 grid grid-cols-2">
-                  <div className="truncate">{key.replace("_", " ")}</div>
+            <div className="grid grid-cols-2 grid-flow-row bg-slate-50 gap-y-2 gap-x-3">
+              {secondary_columns_processed.map((key) => (
+                <div className="row-span-1 grid grid-cols-4 gap-2">
+                  <div className="truncate col-span-3">
+                    {key.replace("_", " ")}
+                  </div>
                   <div className="truncate">{row[key]}</div>
                 </div>
               ))}
@@ -74,18 +79,17 @@ export function CollapsableStatTable({
 
   return (
     <TableContainer component={Paper}>
-      <div>Table v2</div>
+      <div className="flex justify-around">
+        <div>table v2</div>
+        <div onClick={() => setDefaultOpen(!defaultOpen)}>
+          {" "}
+          {defaultOpen ? "Collapse All" : "Expand All"}
+        </div>
+      </div>
       <Table aria-label="collapsible table" size="small">
         <TableHead>
           <TableRow>
-            <TableCell onClick={() => setDefaultOpen(!defaultOpen)}>
-              {" "}
-              {defaultOpen ? (
-                <KeyboardArrowUpIcon />
-              ) : (
-                <KeyboardArrowDownIcon />
-              )}
-            </TableCell>
+            <TableCell></TableCell>
             {primary_columns.map((key) => (
               <TableCell
                 onClick={() => {
