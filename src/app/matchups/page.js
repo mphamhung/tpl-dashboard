@@ -64,6 +64,9 @@ const get_totals = async (player_rows) => {
       "ta pg": sum("ta pg"),
       "dr pg": sum("dr pg"),
       "touches pg": sum("touches pg"),
+    }),
+    mutate({
+      "expected score": (d) => (d["g pg"] + d["a pg"]) / 2,
     })
   );
 };
