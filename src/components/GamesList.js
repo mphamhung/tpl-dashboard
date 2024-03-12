@@ -9,9 +9,9 @@ const GameCardRow = ({ game, name, teamId }) => (
   <div className="grid grid-cols-6 row-span-1 col-span-4 rounded-lg bg-slate-900 p-2">
     <div className="col-span-4 leading-6 line-clamp-1">{name}</div>
     <div className="col-start-5 col-span-1">
-      <Suspense fallback={"*"}>
+      {/* <Suspense fallback={"*"}>
         <Score game={game} teamId={teamId}></Score>
-      </Suspense>
+      </Suspense> */}
     </div>
     <Link
       href={`/game/${game.id}/${teamId}`}
@@ -79,19 +79,22 @@ export default async function GamesList({ leagueId }) {
     games_by_id[game.id] = game;
   }
 
-  return (
-    <div>
-      {Object.keys(games_by_date)
-        .reverse()
-        .map((date) => (
-          <div key={date} className="grid space-y-4">
-            <h1 className="justify-self-center">{date}</h1>
-            {games_by_date[date].map((gameId) => {
-              const game = games_by_id[gameId];
-              return <GameCard game={game} />;
-            })}
-          </div>
-        ))}
-    </div>
+  const createGameCard = async (game) => {
+    return <GameCard game={game} />;
+  };
+  const game_cards = await Promise.all(
+    Object.keys(games_by_date)
+      .reverse()
+      .map((date) => (
+        <div key={date} className="grid space-y-4">
+          <h1 className="justify-self-center">{date}</h1>
+          {games_by_date[date].map((gameId) => {
+            const game = games_by_id[gameId];
+            return createGameCard(game);
+          })}
+        </div>
+      ))
   );
+  console.log(game_cards);
+  return <div>{game_cards}</div>;
 }
