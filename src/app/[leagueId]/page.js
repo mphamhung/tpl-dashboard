@@ -16,7 +16,12 @@ const Page = () => {
       console.log(`https://tplapp.onrender.com/games/${leagueId}`);
       const games = await res.json();
       const dates = tidy(games, distinct("date")).map(
-        (row) => new Date(row.date)
+        (row) =>
+          new Date(
+            new Date(row.date).toLocaleString("en-US", {
+              timeZone: "America/New_York",
+            })
+          )
       );
       dates.reverse();
       router.push(`/${leagueId}/${dates[0].getTime()}`);
