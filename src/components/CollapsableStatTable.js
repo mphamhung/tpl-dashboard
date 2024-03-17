@@ -14,48 +14,119 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useState, Fragment, useEffect } from "react";
 import SortBy from "sort-by";
+import Link from "next/link";
+
+function Abbr(string) {
+  if (string == "name") {
+    return string;
+  }
+
+  if (string == "throwaways") {
+    return "ta";
+  }
+  if (string == "drops") {
+    return "dr";
+  }
+  if (string == "other_passes") {
+    return "t";
+  }
+  console.log(string.replace("_", " ").replace("second", "2"));
+  return ""
+    .concat(
+      string
+        .replace("_", " ")
+        .replace("second", "2")
+        .split(" ")
+        .map((substring) => substring[0])
+    )
+    .replace(",", "");
+}
 
 function Row(props) {
-  const { row, primary_columns, secondary_columns, defaultOpen } = props;
+  const {
+    row,
+    primary_columns,
+    secondary_columns,
+    defaultOpen,
+    setSortKey,
+    idx,
+  } = props;
   const [open, setOpen] = useState(false);
 
   const secondary_columns_processed = secondary_columns.filter(
-    (key) => key != "name"
+    (key) => !["name", "player page"].includes(key)
   );
   useEffect(() => {
     setOpen(defaultOpen);
   }, [defaultOpen]);
+
   return (
     <Fragment>
-      <TableRow onClick={() => setOpen(!open)}>
+      <TableRow
+        onClick={() => setOpen(!open)}
+        className={`${idx % 2 ? "bg-slate-200" : ""}`}
+      >
         <TableCell>
-          <IconButton className="w-4 ">
+          <IconButton className="w-2 p-0">
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        {primary_columns.map((key) => (
-          <TableCell align="left" className="">
-            {row[key]}
-          </TableCell>
-        ))}
+        {primary_columns.map((key, idx) => {
+          if (idx == 0) {
+            return (
+              <TableCell align="left" className="p-0 text-xs">
+                {row[key]}
+              </TableCell>
+            );
+          }
+          return (
+            <TableCell align="left" className="text-xs">
+              {row[key]}
+            </TableCell>
+          );
+        })}
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell
+          style={{
+            paddingBottom: 0,
+            paddingTop: 0,
+            paddingLeft: 2,
+            paddingRight: 2,
+          }}
+          colSpan={primary_columns.length + 2}
+          className={`border-0 w-full text-xs ${idx % 2 ? "bg-slate-100" : ""}`}
+        >
           <Collapse
             className="overflow-auto"
             in={open}
             timeout="auto"
             unmountOnExit
           >
-            <div className="grid grid-cols-2 grid-flow-row bg-slate-50 gap-y-2 gap-x-3">
+            <div className="grid grid-cols-2 grid-flow-row gap-y-2 gap-x-3 p-2 border-2">
               {secondary_columns_processed.map((key) => (
                 <div className="row-span-1 grid grid-cols-4 gap-2">
-                  <div className="truncate col-span-3">
+                  <div
+                    className="truncate col-span-3"
+                    onClick={(e) => {
+                      setSortKey(key);
+                    }}
+                  >
                     {key.replace("_", " ")}
                   </div>
                   <div className="truncate">{row[key]}</div>
                 </div>
               ))}
+              {secondary_columns.includes("player page") ? (
+                <div className="flex justify-around col-span-2 underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                  <Link href={`/player/${row["player page"]}`}>
+                    {" "}
+                    View Player Profile
+                  </Link>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           </Collapse>
         </TableCell>
@@ -79,8 +150,7 @@ export function CollapsableStatTable({
 
   return (
     <TableContainer component={Paper}>
-      <div className="flex justify-around">
-        <div>table v2</div>
+      <div className="flex flex-row-reverse px-10 py-1 text-xs ">
         <div onClick={() => setDefaultOpen(!defaultOpen)}>
           {" "}
           {defaultOpen ? "Collapse All" : "Expand All"}
@@ -89,27 +159,30 @@ export function CollapsableStatTable({
       <Table aria-label="collapsible table" size="small">
         <TableHead>
           <TableRow>
-            <TableCell></TableCell>
+            <TableCell className="w-2 p-0 m-0"></TableCell>
             {primary_columns.map((key) => (
               <TableCell
                 onClick={() => {
                   setSortKey(key);
                   setReverse(sortKey == key ? !reverse : reverse);
                 }}
+                className="text-s"
               >
-                {key}
+                {Abbr(key)}
               </TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows.map((row, idx) => (
             <Row
               key={row.name}
               row={row}
               primary_columns={primary_columns}
               secondary_columns={secondary_columns}
               defaultOpen={defaultOpen}
+              setSortKey={setSortKey}
+              idx={idx}
             />
           ))}
         </TableBody>

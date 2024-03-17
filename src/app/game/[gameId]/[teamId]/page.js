@@ -3,16 +3,21 @@ import { getTeamInfo } from "@/lib/api-fetching";
 import StatTable from "@/components/StatTable";
 import { StackedBar, ScatterPlot } from "@/components/Contributions";
 import { CollapsableStatTable } from "@/components/CollapsableStatTable";
+
+import { tidy, mutate } from "@tidyjs/tidy";
 export default async function Page({ params }) {
   // const events = await getGameEvents(params.gameId, params.teamId)
   const [[game_metadata, _], teamInfo] = await Promise.all([
     GetGameLeagueId([params.gameId]),
     getTeamInfo(params.teamId),
   ]);
-  const rows = await GameTable(
-    params.gameId,
-    params.teamId,
-    game_metadata.date
+  var rows = await GameTable(params.gameId, params.teamId, game_metadata.date);
+
+  rows = tidy(
+    rows,
+    mutate({
+      "player page": (d) => `/${d["playerId"]}/${game_metadata.leagueId}`,
+    })
   );
   // const [rows, _] = preprocess(events, (d) => true)
   const columns = [
@@ -28,7 +33,24 @@ export default async function Page({ params }) {
   ];
   return (
     <div className="grid grid-flow-row gap-2">
-      <StatTable rows={rows} columns={columns} />
+      <CollapsableStatTable
+        rows={rows}
+        primary_columns={[
+          "name",
+          "goals",
+          "assists",
+          "second_assists",
+          "blocks",
+          "other_passes",
+        ]}
+        secondary_columns={[
+          "% Goal Contributions",
+          "% Touches",
+          "throwaways",
+          "drops",
+          "player page",
+        ]}
+      />
       <StackedBar
         rows={rows}
         keys={["% Goal Contributions", "% Touches"]}
@@ -45,11 +67,6 @@ export default async function Page({ params }) {
         sort_key="other_passes"
       />
       <StackedBar rows={rows} keys={["blocks"]} sort_key="blocks" />
-      <CollapsableStatTable
-        rows={rows}
-        primary_columns={["name", "% Goal Contributions", "% Touches"]}
-        secondary_columns={columns}
-      />
     </div>
   );
 }
