@@ -1,15 +1,29 @@
-import GamesList from "@/components/GamesList";
-import GameListByDate from "@/components/GameListByDate";
-import { Suspense } from "react";
-import { getGames, getGameEvents } from "@/lib/api";
+"use client";
 
-export default async function Home({ params }) {
-  const games = await getGames(params.leagueId);
+import { tidy, distinct } from "@tidyjs/tidy";
+import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 
-  games.reverse();
-  return (
-    <div>
-      <GameListByDate gamelist={games} />
-    </div>
-  );
-}
+const Page = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const [_, leagueId] = pathname.split("/");
+  useEffect(() => {
+    // Perform the redirect
+    const fetchDates = async () => {
+      const res = await fetch(`https://tplapp.onrender.com/games/${leagueId}`);
+      console.log(`https://tplapp.onrender.com/games/${leagueId}`);
+      const games = await res.json();
+      const dates = tidy(games, distinct("date")).map(
+        (row) => new Date(row.date)
+      );
+      dates.reverse();
+      router.push(`/${leagueId}/${dates[0].getTime()}`);
+    };
+    fetchDates();
+  }, []);
+
+  return null;
+};
+export default Page;

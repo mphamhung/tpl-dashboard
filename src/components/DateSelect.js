@@ -2,8 +2,16 @@
 import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-export function DateSelect({ dates, selectedDate, setSelectedDate }) {
+
+import { useRouter, usePathname } from "next/navigation";
+
+export function DateSelect({ dates }) {
+  const [selectedDate, setSelectedDate] = useState(dates[0]);
   const [showMore, setShowMore] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const [_, leagueId, date_path] = pathname.split("/");
+  // console.log(leagueId);
 
   return (
     <div className="relative bg-slate-800 rounded-lg px-2">
@@ -26,6 +34,7 @@ export function DateSelect({ dates, selectedDate, setSelectedDate }) {
                 onClick={(e) => {
                   setSelectedDate(date);
                   setShowMore(false);
+                  router.push(`/${leagueId}/${date.getTime()}`);
                 }}
                 className="p-2 bg-slate-800 text-left"
               >
