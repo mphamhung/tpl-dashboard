@@ -19,7 +19,7 @@ export function DateSelect({ dates }) {
         <div className="text-left">
           <div>Viewing Games for:</div>
           <div className="flex flex-row">
-            <div>{selectedDate && selectedDate.toDateString()}</div>
+            <div>{selectedDate && new Date(selectedDate).toDateString()}</div>
             <div>
               {showMore ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </div>
@@ -34,11 +34,11 @@ export function DateSelect({ dates }) {
                 onClick={(e) => {
                   setSelectedDate(date);
                   setShowMore(false);
-                  router.push(`/${leagueId}/${date.getTime()}`);
+                  router.push(`/${leagueId}/${date}`);
                 }}
                 className="p-2 bg-slate-800 text-left"
               >
-                {date.toDateString()}
+                {new Date(date).toDateString()}
               </button>
             );
           })}
