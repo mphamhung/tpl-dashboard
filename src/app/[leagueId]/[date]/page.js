@@ -4,7 +4,7 @@ export default async function Page({ params }) {
   const games = await getGames(params.leagueId);
   console.log();
   const filteredGames = games.filter(
-    (game) => Date.parse(game.date) == params.date
+    (game) => Date.parse(`${game.date} EST`) == params.date
   );
   return (
     <div>

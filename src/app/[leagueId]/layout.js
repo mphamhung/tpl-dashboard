@@ -8,7 +8,7 @@ import { tidy, distinct, mutate } from "@tidyjs/tidy";
 export default async function HomeLayout({ children, params }) {
   const games = await getGames(params.leagueId);
   const dates = tidy(games, distinct("date")).map((row) =>
-    Date.parse(row.date)
+    Date.parse(`${row.date} EST`)
   );
   dates.reverse();
   games.reverse();
