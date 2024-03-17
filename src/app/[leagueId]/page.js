@@ -19,7 +19,7 @@ const Page = () => {
         Date.parse(`${row.date} EST`)
       );
       dates.reverse();
-      router.push(`/${leagueId}/${dates[0].getTime()}`);
+      router.push(`/${leagueId}/${dates[0]}`);
     };
     fetchDates();
   }, []);
