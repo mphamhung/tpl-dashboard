@@ -3,7 +3,8 @@ import { GameListByDate } from "@/components/GameListByDate";
 export default async function Page({ params }) {
   const games = await getGames(params.leagueId);
   const filteredGames = games.filter(
-    (game) => new Date(game.date).getTime() == params.date
+    (game) =>
+      new Date(new Date(game.date).toUTCString()).getTime() == params.date
   );
   return (
     <div>
