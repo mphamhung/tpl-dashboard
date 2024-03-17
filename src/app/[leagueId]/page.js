@@ -15,8 +15,8 @@ const Page = () => {
       const res = await fetch(`https://tplapp.onrender.com/games/${leagueId}`);
       console.log(`https://tplapp.onrender.com/games/${leagueId}`);
       const games = await res.json();
-      const dates = tidy(games, distinct("date")).map(
-        (row) => new Date(new Date(row.date).toUTCString())
+      const dates = tidy(games, distinct("date")).map((row) =>
+        Date.parse(`${row.date} EST`)
       );
       dates.reverse();
       router.push(`/${leagueId}/${dates[0].getTime()}`);
