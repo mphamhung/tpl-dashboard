@@ -7,7 +7,14 @@ import { tidy, distinct, mutate } from "@tidyjs/tidy";
 
 export default async function HomeLayout({ children, params }) {
   const games = await getGames(params.leagueId);
-  const dates = tidy(games, distinct("date")).map((row) => new Date(row.date));
+  const dates = tidy(games, distinct("date")).map(
+    (row) =>
+      new Date(
+        new Date(row.date).toLocaleString("en-US", {
+          timeZone: "America/New_York",
+        })
+      )
+  );
   dates.reverse();
   games.reverse();
   return (
