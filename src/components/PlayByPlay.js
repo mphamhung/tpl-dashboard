@@ -18,34 +18,24 @@ const footer = (tooltipItems) => {
   return tooltipItems[0].raw["playerName"];
 };
 export default function PlayByPlay({ game }) {
-  const [homeTeamEvents, setHomeTeamEvents] = useState([]);
-  const [awayTeamEvents, setAwayTeamEvents] = useState([]);
-  const [homeTeamInfo, setHomeTeamInfo] = useState([]);
-  const [awayTeamInfo, setAwayTeamInfo] = useState([]);
-
+  const [allEvents, setAllEvents] = useState([]);
   useEffect(() => {
     const fetchGameEvents = async () => {
-      const [homeEvents, awayEvents, homeTeamInfo, awayTeamInfo] =
-        await Promise.all([
-          getGameEvents(game.id, game.homeTeamId),
-          getGameEvents(game.id, game.awayTeamId),
-          getTeamInfo(game.homeTeamId),
-          getTeamInfo(game.awayTeamId),
-        ]);
+      const [homeEvents, awayEvents] = await Promise.all([
+        getGameEvents(game.id, game.homeTeamId),
+        getGameEvents(game.id, game.awayTeamId),
+      ]);
 
-      setHomeTeamEvents(homeEvents);
-      setAwayTeamEvents(awayEvents);
-      setHomeTeamInfo(homeTeamInfo);
-      setAwayTeamInfo(awayTeamInfo);
+      const allEvents = homeEvents.concat(awayEvents);
+      allEvents.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      setAllEvents(allEvents);
     };
 
     fetchGameEvents();
   }, [game.id, game.homeTeamId, game.awayTeamId]);
 
-  const allEvents = homeTeamEvents.concat(awayTeamEvents);
-  allEvents.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
   var minDate = 0;
+
   var maxDate = 0;
   if (allEvents.length > 0) {
     minDate = new Date(allEvents[0].timestamp);
@@ -70,7 +60,9 @@ export default function PlayByPlay({ game }) {
         deltaT: new Date(event.timestamp) - new Date(currPos[0].timestamp),
         timestamp:
           event.eventType == "D"
-            ? toData[toData.length - 1].timestamp
+            ? toData.length - 1 > 0
+              ? toData[toData.length - 1].timestamp
+              : new Date(currPos[0].timestamp)
             : new Date(currPos[0].timestamp),
       });
 

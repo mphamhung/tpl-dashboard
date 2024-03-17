@@ -1,18 +1,15 @@
 import GamesList from "@/components/GamesList";
+import GameListByDate from "@/components/GameListByDate";
 import { Suspense } from "react";
-/**
- * Page to display a list of games
- * @param {Object} params the paramter from routing
- * @return {*}
- */
+import { getGames, getGameEvents } from "@/lib/api";
+
 export default async function Home({ params }) {
+  const games = await getGames(params.leagueId);
+
+  games.reverse();
   return (
     <div>
-      <main className="">
-        <Suspense fallback={<p>Loading...</p>}>
-          <GamesList leagueId={params.leagueId} />
-        </Suspense>
-      </main>
+      <GameListByDate gamelist={games} />
     </div>
   );
 }

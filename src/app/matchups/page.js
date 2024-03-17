@@ -10,6 +10,7 @@ import {
   first,
   nDistinct,
   mutate,
+  distinct,
   min,
 } from "@tidyjs/tidy";
 const alterRows = async (eventRows) => {
@@ -70,15 +71,21 @@ const get_totals = async (player_rows) => {
     })
   );
 };
+
+const get_dates = async (game_metadata) => {
+  return tidy(game_metadata, distinct("date")).map((row) => new Date(row.date));
+};
 export default async function Page({ params }) {
   const [game_metadata, rows] = await Promise.all([
     getGamesMetadata(),
     AllGameEvents(),
   ]);
-  const today = new Date();
+
+  const dates = await get_dates(game_metadata);
+  dates.reverse();
 
   const upcoming_games = game_metadata.filter(
-    (game) => new Date(game.date) >= today
+    (game) => new Date(game.date).getTime() >= dates[0].getTime()
   );
 
   const team_datas = await Promise.all(
