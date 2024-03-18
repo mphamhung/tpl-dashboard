@@ -10,7 +10,11 @@ export function Score({ score, is_winner }) {
     tie: "bg-gray-400",
   };
 
-  return <div className={color_map[is_winner]}>{score}</div>;
+  return (
+    <div className={`rounded-l-lg text-center ${color_map[is_winner]}`}>
+      {score}
+    </div>
+  );
 }
 
 export const GameCardRow = ({ game, name, teamId, score, is_winner }) => (
