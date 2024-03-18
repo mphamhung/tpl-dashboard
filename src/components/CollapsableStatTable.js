@@ -12,8 +12,7 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useState, Fragment, useEffect } from "react";
-import SortBy from "sort-by";
+import { useState, Fragment, useEffect, useRef } from "react";
 import Link from "next/link";
 
 function Abbr(string) {
@@ -30,7 +29,6 @@ function Abbr(string) {
   if (string == "other_passes") {
     return "t";
   }
-  console.log(string.replace("_", " ").replace("second", "2"));
   return ""
     .concat(
       string
@@ -48,7 +46,10 @@ function Row(props) {
     primary_columns,
     secondary_columns,
     defaultOpen,
+    sortKey,
     setSortKey,
+    reverse,
+    setReverse,
     idx,
   } = props;
   const [open, setOpen] = useState(false);
@@ -110,6 +111,7 @@ function Row(props) {
                     className="truncate col-span-3"
                     onClick={(e) => {
                       setSortKey(key);
+                      setReverse(sortKey == key ? !reverse : reverse);
                     }}
                   >
                     {key.replace("_", " ")}
@@ -142,7 +144,6 @@ export function CollapsableStatTable({
   const [sortKey, setSortKey] = useState("");
   const [reverse, setReverse] = useState(false);
   const [defaultOpen, setDefaultOpen] = useState(false);
-
   rows.sort((a, b) => a[sortKey] - b[sortKey]);
   if (reverse) {
     rows.reverse();
@@ -156,10 +157,10 @@ export function CollapsableStatTable({
           {defaultOpen ? "Collapse All" : "Expand All"}
         </div>
       </div>
-      <Table aria-label="collapsible table" size="small">
+      <Table aria-label="relative collapsible table" size="small">
         <TableHead>
           <TableRow>
-            <TableCell className="w-2 p-0 m-0"></TableCell>
+            <TableCell className=" w-2 p-0 m-0"></TableCell>
             {primary_columns.map((key) => (
               <TableCell
                 onClick={() => {
@@ -181,7 +182,10 @@ export function CollapsableStatTable({
               primary_columns={primary_columns}
               secondary_columns={secondary_columns}
               defaultOpen={defaultOpen}
+              sortKey={sortKey}
               setSortKey={setSortKey}
+              reverse={reverse}
+              setReverse={setReverse}
               idx={idx}
             />
           ))}
