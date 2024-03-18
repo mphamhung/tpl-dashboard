@@ -17,7 +17,7 @@ import Link from "next/link";
 
 function Abbr(string) {
   if (string == "name") {
-    return string;
+    return "Name";
   }
 
   if (string == "throwaways") {
@@ -27,7 +27,7 @@ function Abbr(string) {
     return "dr";
   }
   if (string == "other_passes") {
-    return "t";
+    return "T";
   }
   return ""
     .concat(
@@ -37,7 +37,8 @@ function Abbr(string) {
         .split(" ")
         .map((substring) => substring[0])
     )
-    .replace(",", "");
+    .replace(",", "")
+    .toUpperCase();
 }
 
 function Row(props) {
@@ -75,13 +76,13 @@ function Row(props) {
         {primary_columns.map((key, idx) => {
           if (idx == 0) {
             return (
-              <TableCell align="left" className="p-0 text-xs">
+              <TableCell align="left" className="p-0 text-xs font-sans">
                 {row[key]}
               </TableCell>
             );
           }
           return (
-            <TableCell align="left" className="text-xs">
+            <TableCell align="left" className="text-xs text-teal-800 font-sans">
               {row[key]}
             </TableCell>
           );
@@ -108,7 +109,7 @@ function Row(props) {
               {secondary_columns_processed.map((key) => (
                 <div className="row-span-1 grid grid-cols-4 gap-2">
                   <div
-                    className="truncate col-span-3"
+                    className="truncate col-span-3 font-semibold font-sans"
                     onClick={(e) => {
                       setSortKey(key);
                       setReverse(sortKey == key ? !reverse : reverse);
@@ -116,11 +117,13 @@ function Row(props) {
                   >
                     {key.replace("_", " ")}
                   </div>
-                  <div className="truncate">{row[key]}</div>
+                  <div className="truncate  text-teal-800 font-sans">
+                    {row[key]}
+                  </div>
                 </div>
               ))}
               {secondary_columns.includes("player page") ? (
-                <div className="flex justify-around col-span-2 underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                <div className="col-span-1 col-start-2 underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
                   <Link href={`/player/${row["player page"]}`}>
                     {" "}
                     View Player Profile
@@ -167,7 +170,7 @@ export function CollapsableStatTable({
                   setSortKey(key);
                   setReverse(sortKey == key ? !reverse : reverse);
                 }}
-                className="text-s"
+                className="text-s font-bold font-sans"
               >
                 {Abbr(key)}
               </TableCell>
