@@ -9,7 +9,9 @@ export default async function GamePageTemplate({ children, params }) {
   return (
     <>
       <GamePageTabs game={game} />
-      <div className="rounded-b-lg  bg-gray-600 p-2">{children}</div>
+      <div className="rounded-b-lg  bg-gray-600 p-2 overflow-scroll max-h-screen">
+        {children}
+      </div>
     </>
   );
 }

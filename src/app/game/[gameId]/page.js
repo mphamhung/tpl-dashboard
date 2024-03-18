@@ -8,8 +8,8 @@ export default async function Page({ params }) {
   );
 
   return (
-    <>
+    <div className="h-full w-full">
       <PlayByPlay game={game} />
-    </>
+    </div>
   );
 }

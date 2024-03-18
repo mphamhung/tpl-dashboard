@@ -46,11 +46,7 @@ export function GamePageTabs({ game }) {
   return (
     <div className="grid grid-cols-5 gap-1">
       <div
-        className={
-          selectedTab == "overview"
-            ? "h-12 text-xs text-left line-clamp-2 col-span-1 rounded-t-lg bg-gray-600 px-3"
-            : "h-12 text-xs text-left line-clamp-2 col-span-1  rounded-t-lg bg-gray-800 px-3  border-b-black border-b-2"
-        }
+        className={`font-sans h-12 text-xs text-left line-clamp-2 col-span-1 rounded-t-lg px-3 ${selectedTab == "overview" ? "bg-gray-600" : "bg-gray-800 border-b-black border-b-2"} bg-gray-600 px-3 `}
         onClick={() => {
           setSelectedTab("overview");
           if (game) {
@@ -61,11 +57,7 @@ export function GamePageTabs({ game }) {
         Game Overview
       </div>
       <div
-        className={
-          selectedTab == "home"
-            ? "h-12 text-xs text-left line-clamp-2 col-span-2  rounded-t-lg bg-gray-600 px-3 grid grid-cols-5"
-            : "h-12 text-xs text-left line-clamp-2 col-span-2  rounded-t-lg bg-gray-800 px-3 grid grid-cols-5  border-b-black border-b-2"
-        }
+        className={`font-sans h-12 text-xs text-left line-clamp-2 col-span-2 rounded-t-lg px-3 grid grid-cols-5 ${selectedTab == "home" ? "bg-gray-600" : "bg-gray-800 border-b-black border-b-2"} bg-gray-600 px-3 `}
         onClick={() => {
           setSelectedTab("home");
           if (game) {
@@ -81,11 +73,7 @@ export function GamePageTabs({ game }) {
         </div>
       </div>
       <div
-        className={
-          selectedTab == "away"
-            ? "h-12 text-xs text-left line-clamp-2 col-span-2 rounded-t-lg bg-gray-600 px-3 grid grid-cols-5"
-            : "h-12 text-xs text-left line-clamp-2 col-span-2  rounded-t-lg bg-gray-800 px-3 grid grid-cols-5  border-b-black border-b-2"
-        }
+        className={`font-sans h-12 text-xs text-left line-clamp-2 col-span-2 rounded-t-lg px-3 grid grid-cols-5 ${selectedTab == "away" ? "bg-gray-600" : "bg-gray-800 border-b-black border-b-2"} bg-gray-600 px-3 `}
         onClick={() => {
           setSelectedTab("away");
           if (game) {

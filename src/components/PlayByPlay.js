@@ -160,8 +160,8 @@ export default function PlayByPlay({ game }) {
       },
     },
   };
-  const w = 300;
-  const h = 1000;
+  const w = 20;
+  const h = 100;
   return (
     <Bar
       className="bg-black rounded-lg"
