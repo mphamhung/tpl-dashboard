@@ -14,7 +14,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useState, Fragment, useEffect, useRef } from "react";
 import Link from "next/link";
-
+import SortIcon from "@mui/icons-material/Sort";
 function Abbr(string) {
   if (string == "name") {
     return "Name";
@@ -163,7 +163,7 @@ export function CollapsableStatTable({
       <Table aria-label="relative collapsible table" size="small">
         <TableHead>
           <TableRow>
-            <TableCell className=" w-2 p-0 m-0"></TableCell>
+            <TableCell className=" w-1 p-0 m-0"></TableCell>
             {primary_columns.map((key) => (
               <TableCell
                 onClick={() => {
@@ -172,7 +172,7 @@ export function CollapsableStatTable({
                 }}
                 className="text-s font-bold font-sans"
               >
-                {Abbr(key)}
+                <div>{Abbr(key)}</div>
               </TableCell>
             ))}
           </TableRow>

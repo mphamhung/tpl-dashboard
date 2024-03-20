@@ -11,7 +11,11 @@ export default async function Page({ params }) {
     GetGameLeagueId([params.gameId]),
     getTeamInfo(params.teamId),
   ]);
-  var rows = await GameTable(params.gameId, params.teamId, game_metadata.date);
+  var rows = await GameTable(
+    params.gameId,
+    params.teamId,
+    game_metadata ? game_metadata.date : null
+  );
 
   rows = tidy(
     rows,
