@@ -25,7 +25,9 @@ export default async function PlayerPageLayout({ children, params }) {
         playerId={params.playerId}
         leagueIds={leagueIds}
       />
-      {children}
+      <div className="rounded-b-lg  bg-gray-600 p-2 overflow-scroll max-h-screen">
+        <Suspense fallback={"loading player page"}>{children}</Suspense>
+      </div>
     </>
   );
 }

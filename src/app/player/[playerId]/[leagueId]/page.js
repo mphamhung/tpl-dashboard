@@ -5,15 +5,14 @@ import { tidy, first, mutate, leftJoin, distinct } from "@tidyjs/tidy";
 import LeagueBadges from "@/components/LeagueBadges";
 import Link from "next/link";
 import StatsAcrossTime from "@/components/StatsAcrossTime";
+import { CollapsableStatTable } from "@/components/CollapsableStatTable";
+
 export default async function Page({ params }) {
   var rows = await PlayerGameEvents(params.playerId);
   const game_league_mapping = await GetGameLeagueId(
     rows.map((row) => row.gameId)
   );
-  const playerName = tidy(rows, first("name"));
-
   rows = tidy(rows, leftJoin(game_league_mapping, { by: "gameId" }));
-  const leagueIds = tidy(rows, distinct("leagueId")).map((row) => row.leagueId);
   rows = rows.filter((row) => row.leagueId == params.leagueId);
   rows = tidy(
     rows,
@@ -21,24 +20,31 @@ export default async function Page({ params }) {
       team: (d) =>
         d["teamId"] == d["awayTeamId"] ? d["awayTeam"] : d["homeTeam"],
       date: (d) => new Date(d["date"]),
+      game_time: (d) => Number(d["time"].split(":")[0]) - 12, //Convert to pm game
     })
   );
-
-  const columns = [
-    "date",
-    "team",
-    "goals",
-    "assists",
-    "second_assists",
-    "blocks",
-    "throwaways",
-    "drops",
-    "other_passes",
-    "% pass",
-  ];
+  rows.reverse();
+  console.log(rows);
   return (
     <>
-      <StatTable rows={rows.reverse()} columns={columns} />
+      <CollapsableStatTable
+        rows={rows}
+        primary_columns={[
+          "date",
+          "goals",
+          "assists",
+          "second_assists",
+          "blocks",
+          "other_passes",
+        ]}
+        secondary_columns={[
+          "team",
+          "game_time",
+          "throwaways",
+          "drops",
+          "game page",
+        ]}
+      />
       <StatsAcrossTime rows={rows} />
     </>
   );

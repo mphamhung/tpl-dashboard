@@ -19,7 +19,6 @@ function Abbr(string) {
   if (string == "name") {
     return "Name";
   }
-
   if (string == "throwaways") {
     return "ta";
   }
@@ -28,6 +27,12 @@ function Abbr(string) {
   }
   if (string == "other_passes") {
     return "T";
+  }
+  if (string == "date") {
+    return "Date";
+  }
+  if (string == "game_time") {
+    return "Time";
   }
   return ""
     .concat(
@@ -56,7 +61,7 @@ function Row(props) {
   const [open, setOpen] = useState(false);
 
   const secondary_columns_processed = secondary_columns.filter(
-    (key) => !["name", "player page"].includes(key)
+    (key) => !["name", "player page", "team", "game page"].includes(key)
   );
   useEffect(() => {
     setOpen(defaultOpen);
@@ -77,13 +82,13 @@ function Row(props) {
           if (idx == 0) {
             return (
               <TableCell align="left" className="p-0 text-xs font-sans">
-                {row[key]}
+                {key == "date" ? row[key].toDateString() : row[key]}
               </TableCell>
             );
           }
           return (
             <TableCell align="left" className="text-xs text-teal-800 font-sans">
-              {row[key]}
+              {key == "date" ? row[key].toDateString() : row[key]}
             </TableCell>
           );
         })}
@@ -106,6 +111,13 @@ function Row(props) {
             unmountOnExit
           >
             <div className="grid grid-cols-2 grid-flow-row gap-y-2 gap-x-3 p-2 border-2">
+              {secondary_columns.includes("team") ? (
+                <div className="col-span-2 col-start-1 underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                  <Link href={`/teams/${row["teamId"]}`}> {row["team"]}</Link>
+                </div>
+              ) : (
+                <></>
+              )}
               {secondary_columns_processed.map((key) => (
                 <div className="row-span-1 grid grid-cols-4 gap-2">
                   <div
@@ -118,7 +130,7 @@ function Row(props) {
                     {key.replace("_", " ")}
                   </div>
                   <div className="truncate  text-teal-800 font-sans">
-                    {row[key]}
+                    {key == "date" ? row[key].toDateString() : row[key]}
                   </div>
                 </div>
               ))}
@@ -127,6 +139,16 @@ function Row(props) {
                   <Link href={`/player/${row["player page"]}`}>
                     {" "}
                     View Player Profile
+                  </Link>
+                </div>
+              ) : (
+                <></>
+              )}
+              {secondary_columns.includes("game page") ? (
+                <div className="col-span-1 col-start-2 underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                  <Link href={`/game/${row["gameId"]}/${row["teamId"]}`}>
+                    {" "}
+                    View Game
                   </Link>
                 </div>
               ) : (

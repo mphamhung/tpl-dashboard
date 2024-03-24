@@ -20,7 +20,7 @@ export default async function Page({ params }) {
   rows = tidy(
     rows,
     mutate({
-      "player page": (d) => `/${d["playerId"]}/${game_metadata.leagueId}`,
+      "player page": (d) => `/${d["playerId"]}`,
     })
   );
   // const [rows, _] = preprocess(events, (d) => true)
