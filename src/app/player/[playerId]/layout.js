@@ -17,7 +17,6 @@ export default async function PlayerPageLayout({ children, params }) {
   rows = tidy(rows, leftJoin(game_league_mapping, { by: "gameId" }));
   const leagueIds = tidy(rows, distinct("leagueId")).map((row) => row.leagueId);
 
-  console.log(leagueIds);
   return (
     <>
       <PlayerPageTabs
