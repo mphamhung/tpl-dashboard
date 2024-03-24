@@ -71,6 +71,13 @@ export default async function Page({ params }) {
       <div>Throwaways: {summaries["throwaways"]}</div>
       <div>Drops: {summaries["drops"]}</div>
       <div>Other passes: {summaries["other_passes"]}</div>
+      <div>
+        <a
+          href={`https://www.tuc.org/zuluru/people/view?person=${params.playerId}`}
+        >
+          TUC profile
+        </a>
+      </div>
     </>
   );
 }

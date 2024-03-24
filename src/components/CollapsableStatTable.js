@@ -113,7 +113,12 @@ function Row(props) {
             <div className="grid grid-cols-2 grid-flow-row gap-y-2 gap-x-3 p-2 border-2">
               {secondary_columns.includes("team") ? (
                 <div className="col-span-2 col-start-1 underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-                  <Link href={`/teams/${row["teamId"]}`}> {row["team"]}</Link>
+                  <Link
+                    href={`https://www.tuc.org/zuluru/teams/view?team=${row["teamId"]}`}
+                  >
+                    {" "}
+                    {row["team"]}
+                  </Link>
                 </div>
               ) : (
                 <></>

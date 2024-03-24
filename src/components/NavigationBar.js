@@ -5,6 +5,7 @@ export default function NavigationBar() {
     { href: "/#", text: "Current Season" },
     { href: "/rankings", text: "View All Data" },
     { href: "/leagues", text: "Past Seasons" },
+    { href: "/search", text: "Find Player" },
   ];
 
   return (
