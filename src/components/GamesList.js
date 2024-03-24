@@ -95,6 +95,5 @@ export default async function GamesList({ leagueId }) {
         </div>
       ))
   );
-  console.log(game_cards);
   return <div>{game_cards}</div>;
 }

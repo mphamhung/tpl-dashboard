@@ -24,7 +24,6 @@ export default async function Page({ params }) {
     })
   );
   rows.reverse();
-  console.log(rows);
   return (
     <>
       <CollapsableStatTable

@@ -19,8 +19,6 @@ export function PlayerPageTabs({ playerName, playerId, leagueIds }) {
   );
   const router = useRouter();
 
-  console.log(leagueId);
-  console.log(currLeague, selectedTab);
   return (
     <>
       <Typography variant="h4">{playerName}</Typography>

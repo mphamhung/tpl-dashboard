@@ -51,7 +51,6 @@ export default async function Page({ params }) {
       "game negatives": (d) => d["throwaways"] + d["drops"],
     })
   )[0];
-  console.log(summaries);
   rows.reverse();
   return (
     <>
