@@ -3,8 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import NavigationBar from "@/components/NavigationBar";
-import { Suspense } from "react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 const inter = Inter({ subsets: ["latin"] });
 

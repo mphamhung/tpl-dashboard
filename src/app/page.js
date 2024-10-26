@@ -10,6 +10,7 @@ const Home = () => {
     const queryApi = async () => {
       const res = await fetch("https://tplapp.onrender.com/teams");
       const teams = await res.json();
+
       let maxLeagueId = -1;
       teams.forEach((element) => {
         if (Number(element.leagueId) > maxLeagueId) {

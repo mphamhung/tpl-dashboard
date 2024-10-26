@@ -13,7 +13,6 @@ const Page = () => {
     // Perform the redirect
     const fetchDates = async () => {
       const res = await fetch(`https://tplapp.onrender.com/games/${leagueId}`);
-      console.log(`https://tplapp.onrender.com/games/${leagueId}`);
       const games = await res.json();
       const dates = tidy(games, distinct("date")).map((row) =>
         Date.parse(`${row.date} EST`)

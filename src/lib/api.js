@@ -144,3 +144,12 @@ export async function getGameRows(gameId, teamId) {
   });
   return preprocess(data);
 }
+
+export async function getLeagueIds() {
+  const res = await fetch("https://tplapp.onrender.com/teams");
+  const teams = await res.json();
+  const leagueIds = [...new Set(teams.map((team) => team.leagueId))];
+  leagueIds.sort((a, b) => b - a);
+
+  return leagueIds;
+}

@@ -11,7 +11,6 @@ export function DateSelect({ dates }) {
   const router = useRouter();
   const pathname = usePathname();
   const [_, leagueId, date_path] = pathname.split("/");
-  // console.log(leagueId);
 
   return (
     <div className="relative bg-slate-800 rounded-lg px-2">
