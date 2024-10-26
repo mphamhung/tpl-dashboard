@@ -3,9 +3,7 @@
 const serverUrl = process.env.serverUrl;
 
 export async function getGames(leagueId) {
-  const res = await fetch(serverUrl + "games/" + leagueId, {
-    cache: "no-store",
-  });
+  const res = await fetch(serverUrl + "games/" + leagueId, {});
   // Revalidate every day
   // The return value is *not* serialized
   // You can return Date, Map, Set, etc.
@@ -17,9 +15,10 @@ export async function getGames(leagueId) {
 }
 
 export async function getGameEvents(gameId, teamId) {
-  const res = await fetch(serverUrl + "gameEvents/" + gameId + "/" + teamId, {
-    cache: "no-store",
-  });
+  const res = await fetch(
+    serverUrl + "gameEvents/" + gameId + "/" + teamId,
+    {}
+  );
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary

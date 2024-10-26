@@ -160,13 +160,13 @@ export default function PlayByPlay({ game }) {
       },
     },
   };
-  const w = 20;
+  const w = 50;
   const h = 100;
   return (
     <Bar
       className="bg-black rounded-lg"
-      height={h}
       width={w}
+      height={h}
       data={data}
       options={options}
     />

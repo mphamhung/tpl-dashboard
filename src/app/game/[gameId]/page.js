@@ -7,9 +7,5 @@ export default async function Page({ params }) {
     (game) => Number(game.id) === Number(params.gameId)
   );
 
-  return (
-    <div className="h-full w-full">
-      <PlayByPlay game={game} />
-    </div>
-  );
+  return <PlayByPlay game={game} />;
 }

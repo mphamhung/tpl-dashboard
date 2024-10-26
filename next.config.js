@@ -4,6 +4,8 @@ const nextConfig = {
   env: {
     leagueId: "764",
     serverUrl: "https://tplapp.onrender.com/",
+    DATABASE_URL:
+      "sql://michael:MJ47gafJJ9iuAlpMyoVf6A@tpl-dashboard-cluster-14037.7tt.aws-us-east-1.cockroachlabs.cloud:26257/dashboard-db",
   },
   reactStrictMode: false,
   eslint: {
