@@ -60,62 +60,6 @@ function gameEventSequenceToRows(game_events_sequence) {
   return data;
 }
 
-function preprocess(game_rows, filter_func) {
-  let rows = tidy(
-    game_rows,
-    mutate({
-      GC: (d) => d["goals"] + d["assists"] + d["second_assists"],
-      "% pass": (d) =>
-        (
-          1 -
-          d["throwaways"] /
-            (d["throwaways"] +
-              d["other_passes"] +
-              d["assists"] +
-              d["second_assists"])
-        ).toFixed(2),
-      total_touches: (d) => d["GC"] + d["other_passes"],
-    })
-  );
-
-  const totals = tidy(
-    rows,
-    groupBy(
-      ["gameId", "teamId"],
-      [
-        summarize({
-          goal_contributions: sum("GC"),
-          total_touches: sum("other_passes"),
-        }),
-      ],
-      groupBy.object({ single: true })
-    )
-  );
-
-  rows = tidy(
-    rows,
-    mutate({
-      "% Goal Contributions": (d) =>
-        Number(
-          (d["GC"] * 100) /
-            totals[d["gameId"]][d["teamId"]]["goal_contributions"]
-        ).toFixed(2),
-      "% Touches": (d) =>
-        Number(
-          (d["other_passes"] * 100) /
-            totals[d["gameId"]][d["teamId"]]["total_touches"]
-        ).toFixed(2),
-      participation: (d) => d["GC"] + d["other_passes"],
-    })
-  );
-
-  rows = tidy(rows, filter(filter_func));
-
-  const graph = {};
-
-  return [rows, graph];
-}
-
 export async function GamesMetadata() {
   const game_metadata = await getGamesMetadata();
   const values = game_metadata.map((row) => [

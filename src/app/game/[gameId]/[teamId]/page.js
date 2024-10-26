@@ -1,28 +1,22 @@
-import { GameTable, GetGameLeagueId } from "@/lib/preprocess";
-import { getTeamInfo } from "@/lib/api-fetching";
+"use client";
+import { getGameRows } from "@/lib/api";
+import { useEffect, useState } from "react";
 import StatTable from "@/components/StatTable";
 import { StackedBar, ScatterPlot } from "@/components/Contributions";
 import { CollapsableStatTable } from "@/components/CollapsableStatTable";
+export default function Page({ params }) {
+  const [rows, setRows] = useState([]);
 
-import { tidy, mutate } from "@tidyjs/tidy";
-export default async function Page({ params }) {
-  // const events = await getGameEvents(params.gameId, params.teamId)
-  const [[game_metadata, _], teamInfo] = await Promise.all([
-    GetGameLeagueId([params.gameId]),
-    getTeamInfo(params.teamId),
-  ]);
-  var rows = await GameTable(
-    params.gameId,
-    params.teamId,
-    game_metadata ? game_metadata.date : null
-  );
+  useEffect(() => {
+    // wake api
+    const queryApi = async () => {
+      var [events, _] = await getGameRows(params.gameId, params.teamId);
+      setRows(events);
+    };
 
-  rows = tidy(
-    rows,
-    mutate({
-      "player page": (d) => `/${d["playerId"]}`,
-    })
-  );
+    queryApi();
+  }, []);
+
   // const [rows, _] = preprocess(events, (d) => true)
   const columns = [
     "name",

@@ -6,6 +6,7 @@ export default async function GamePageTemplate({ children, params }) {
     (game) => Number(game.id) === Number(params.gameId)
   );
 
+  console.log(game);
   return (
     <>
       <GamePageTabs game={game} />
