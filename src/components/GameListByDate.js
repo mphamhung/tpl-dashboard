@@ -1,25 +1,28 @@
+import { tidy, distinct, mutate } from "@tidyjs/tidy";
 import { GameCard } from "./GameCard";
-
 export async function GameListByDate({ gamelist }) {
-  const worker = new Worker("./worker.js");
-
-  worker.postMessage(gamelist);
-
-  const sortedGamelist = await new Promise((resolve) => {
-    worker.onmessage = function (e) {
-      resolve(e.data);
-    };
-  });
-
-  const gameCards = await Promise.all(
-    sortedGamelist.map(async (game) => {
-      return <GameCard game={game} />;
+  gamelist = tidy(
+    gamelist,
+    mutate({
+      displayDate: (d) =>
+        new Date(d["date"]).toLocaleString("en-US", {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+        }),
+      gameTime: (d) => Number(d["time"].split(":")[0]) - 12, //Convert to pm game
     })
   );
 
+  gamelist.sort((a, b) => a.gameTime - b.gameTime);
+
   return (
     <div className="space-y-4">
-      <div className="flex flex-col space-y-4">{gameCards}</div>
+      <div className="flex flex-col space-y-4">
+        {gamelist.map((game) => {
+          return <GameCard game={game} />;
+        })}
+      </div>
     </div>
   );
 }

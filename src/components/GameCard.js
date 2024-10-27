@@ -32,7 +32,7 @@ export function GameCard({ game }) {
       queryScores(game);
     };
     queryApi();
-  }, [game]);
+  }, []);
 
   return (
     <div className="grid grid-rows-4 grid-cols-4 h-auto rounded-lg gap-1 bg-slate-700 p-1">

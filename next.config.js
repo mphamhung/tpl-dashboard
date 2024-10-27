@@ -13,5 +13,8 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    workerThreads: true,
+  },
 };
 module.exports = nextConfig;
