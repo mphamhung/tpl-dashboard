@@ -10,11 +10,16 @@ import {
   filter,
   last,
 } from "@tidyjs/tidy";
+
+const today = new Date();
+// const use_cache = today.getDay() !== 3; // true on days other than Wednesday
+const use_cache = true; // true on days other than Wednesday
+
 export async function getGames(leagueId = null) {
   const res = await fetch(
     serverUrl + "games" + `${leagueId ? "/" + String(leagueId) : ""}`,
     {
-      cache: "no-store",
+      cache: use_cache ? "default" : "no-store", // Use cache if not Wednesday
     }
   );
   if (!res.ok) {
@@ -25,7 +30,7 @@ export async function getGames(leagueId = null) {
 
 export async function getGameEvents(gameId, teamId) {
   const res = await fetch(serverUrl + "gameEvents/" + gameId + "/" + teamId, {
-    cache: "no-store",
+    cache: use_cache ? "default" : "no-store", // Use cache if not Wednesday
   });
 
   if (!res.ok) {
@@ -146,10 +151,36 @@ export async function getGameRows(gameId, teamId) {
 }
 
 export async function getLeagueIds() {
-  const res = await fetch("https://tplapp.onrender.com/teams");
+  const res = await fetch(serverUrl + "teams", {
+    cache: use_cache ? "default" : "no-store", // Use cache if not Wednesday
+  });
   const teams = await res.json();
   const leagueIds = [...new Set(teams.map((team) => team.leagueId))];
   leagueIds.sort((a, b) => b - a);
 
   return leagueIds;
+}
+
+export async function getAllGameEvents(leagueId) {
+  let games = await fetch(serverUrl + "games", {
+    cache: use_cache ? "default" : "no-store", // Use cache if not Wednesday
+  }).then((response) => response.json());
+
+  games = games.filter((g) => g.leagueId === leagueId);
+
+  const events = await Promise.all(
+    games.map((game) =>
+      Promise.all([
+        getGameEvents(game.id, game.homeTeamId),
+        getGameEvents(game.id, game.awayTeamId),
+      ])
+    )
+  );
+
+  return events;
+}
+
+export async function PlayerGameEvents(playerId, leagueId) {
+  const events = await getAllGameEvents(leagueId);
+  console.log(events);
 }
