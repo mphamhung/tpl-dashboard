@@ -2,37 +2,22 @@
 import Link from "next/link";
 import { GameCardRow } from "./GameCardRow";
 import { useState, useEffect } from "react";
-import { getGameEvents } from "@/lib/api-fetching";
+import { getScore } from "@/lib/api";
 
-export function GameCard({ game }) {
-  const [homeScore, setHomeScore] = useState(0);
-  const [awayScore, setAwayScore] = useState(0);
+export function GameCard({ game, homeScore, awayScore }) {
+  // const [homeScore, setHomeScore] = useState(homeScore);
+  // const [awayScore, setAwayScore] = useState(awayScore);
 
-  useEffect(() => {
-    // wake api
-    const getScore = async (events) => {
-      return events.filter((event) => event.eventType == "Goal").length;
-    };
-
-    const queryScores = async (game) => {
-      const [homeTeamEvents, awayTeamEvents] = await Promise.all([
-        getGameEvents(game.id, game.homeTeamId),
-        getGameEvents(game.id, game.awayTeamId),
-      ]);
-
-      const [homeScore, awayScore] = await Promise.all([
-        getScore(homeTeamEvents),
-        getScore(awayTeamEvents),
-      ]);
-      setHomeScore(homeScore);
-      setAwayScore(awayScore);
-    };
-
-    const queryApi = async () => {
-      queryScores(game);
-    };
-    queryApi();
-  }, []);
+  // useEffect(() => {
+  //   const queryApi = async () => {
+  //     let a = await getScore(game.id, game.homeTeamId);
+  //     let b = await getScore(game.id, game.awayTeamId);
+  //     setHomeScore(a);
+  //     setAwayScore(b);
+  //   };
+  //   queryApi();
+  //   console.log(homeScore, awayScore);
+  // }, [game]);
 
   return (
     <div className="grid grid-rows-4 grid-cols-4 h-auto rounded-lg gap-1 bg-slate-700 p-1">

@@ -1,5 +1,7 @@
 import { tidy, distinct, mutate } from "@tidyjs/tidy";
 import { GameCard } from "./GameCard";
+import { getScore } from "@/lib/api";
+
 export async function GameListByDate({ gamelist }) {
   gamelist = tidy(
     gamelist,
@@ -19,8 +21,12 @@ export async function GameListByDate({ gamelist }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-col space-y-4">
-        {gamelist.map((game) => {
-          return <GameCard game={game} />;
+        {gamelist.map(async (game) => {
+          let homeScore = await getScore(game.id, game.homeTeamId);
+          let awayScore = await getScore(game.id, game.awayTeamId);
+          return (
+            <GameCard game={game} homeScore={homeScore} awayScore={awayScore} />
+          );
         })}
       </div>
     </div>

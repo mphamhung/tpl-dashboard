@@ -43,6 +43,7 @@ export async function getGameEvents(gameId, teamId) {
 
 export async function getScore(gameId, teamId) {
   const teamEvents = await getGameEvents(gameId, teamId);
+  console.log(teamEvents.filter((event) => event.eventType == "Goal").length);
   return teamEvents.filter((event) => event.eventType == "Goal").length;
 }
 
