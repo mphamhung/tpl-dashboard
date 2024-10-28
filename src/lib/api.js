@@ -12,8 +12,8 @@ import {
 } from "@tidyjs/tidy";
 
 const today = new Date();
-// const use_cache = today.getDay() !== 3; // true on days other than Wednesday
-const use_cache = true; // true on days other than Wednesday
+const use_cache = today.getDay() !== 3; // true on days other than Wednesday
+// const use_cache = true; // true on days other than Wednesday
 
 export async function getGames(leagueId = null) {
   const res = await fetch(
