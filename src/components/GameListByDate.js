@@ -18,15 +18,17 @@ export async function GameListByDate({ gamelist }) {
 
   gamelist.sort((a, b) => a.gameTime - b.gameTime);
 
+  async function createGameCard(game) {
+    let homeScore = await getScore(game.id, game.homeTeamId);
+    let awayScore = await getScore(game.id, game.awayTeamId);
+    return <GameCard game={game} homeScore={homeScore} awayScore={awayScore} />;
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col space-y-4">
         {gamelist.map(async (game) => {
-          let homeScore = await getScore(game.id, game.homeTeamId);
-          let awayScore = await getScore(game.id, game.awayTeamId);
-          return (
-            <GameCard game={game} homeScore={homeScore} awayScore={awayScore} />
-          );
+          return createGameCard(game);
         })}
       </div>
     </div>

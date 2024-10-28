@@ -13,7 +13,6 @@ import {
 
 const today = new Date();
 const use_cache = today.getDay() !== 3; // true on days other than Wednesday
-// const use_cache = true; // true on days other than Wednesday
 
 export async function getGames(leagueId = null) {
   const res = await fetch(
@@ -43,7 +42,6 @@ export async function getGameEvents(gameId, teamId) {
 
 export async function getScore(gameId, teamId) {
   const teamEvents = await getGameEvents(gameId, teamId);
-  console.log(teamEvents.filter((event) => event.eventType == "Goal").length);
   return teamEvents.filter((event) => event.eventType == "Goal").length;
 }
 

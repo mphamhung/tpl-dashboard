@@ -1,24 +1,7 @@
-"use client";
 import Link from "next/link";
 import { GameCardRow } from "./GameCardRow";
-import { useState, useEffect } from "react";
-import { getScore } from "@/lib/api";
 
 export function GameCard({ game, homeScore, awayScore }) {
-  // const [homeScore, setHomeScore] = useState(homeScore);
-  // const [awayScore, setAwayScore] = useState(awayScore);
-
-  // useEffect(() => {
-  //   const queryApi = async () => {
-  //     let a = await getScore(game.id, game.homeTeamId);
-  //     let b = await getScore(game.id, game.awayTeamId);
-  //     setHomeScore(a);
-  //     setAwayScore(b);
-  //   };
-  //   queryApi();
-  //   console.log(homeScore, awayScore);
-  // }, [game]);
-
   return (
     <div className="grid grid-rows-4 grid-cols-4 h-auto rounded-lg gap-1 bg-slate-700 p-1">
       <div className="grid grid-cols-4 row-span-1 col-span-4">
