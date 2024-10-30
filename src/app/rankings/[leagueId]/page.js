@@ -9,6 +9,7 @@ import {
   first,
   nDistinct,
   mutate,
+  max,
 } from "@tidyjs/tidy";
 
 export default async function Page({ params }) {
@@ -29,6 +30,12 @@ export default async function Page({ params }) {
           drops: sum("drops"),
           other_passes: sum("other_passes"),
           games_played: nDistinct("gameId"),
+          max_goals: max("goals"),
+          max_assists: max("assists"),
+          max_second_assists: max("second_assists"),
+          max_blocks: max("blocks"),
+          max_throwaways: max("throwaways"),
+          max_drops: max("drops"),
         }),
       ]
     ),
@@ -83,6 +90,12 @@ export default async function Page({ params }) {
           "% Touches",
           "throwaways",
           "drops",
+          "max_goals",
+          "max_assists",
+          "max_second_assists",
+          "max_blocks",
+          "max_throwaways",
+          "max_drops",
           "player page",
         ]}
         abbr={false}

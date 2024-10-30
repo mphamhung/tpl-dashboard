@@ -4,6 +4,7 @@ import { Children, Suspense } from "react";
 import { getGames, getGameEvents } from "@/lib/api";
 import { DateSelect } from "@/components/DateSelect";
 import { tidy, distinct, mutate } from "@tidyjs/tidy";
+import Link from "next/link";
 
 export default async function HomeLayout({ children, params }) {
   const games = await getGames(params.leagueId);
@@ -16,6 +17,7 @@ export default async function HomeLayout({ children, params }) {
     <div>
       <div className="flex justify-center ">
         <DateSelect dates={dates} />
+        <Link href={"/rankings/" + params.leagueId}>View All Stats</Link>
       </div>
       {children}
     </div>
