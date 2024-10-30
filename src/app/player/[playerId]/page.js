@@ -21,7 +21,7 @@ export default async function Page({ params }) {
       const allRows = []; // Array to collect all rows
 
       for (const idx in leagueIds) {
-        setLoading(idx / (leagueIds.length - 1));
+        setLoading((Number(idx) + 1) / leagueIds.length);
         const playerEvents = await getPlayerEvents(
           params.playerId,
           leagueIds[idx]
