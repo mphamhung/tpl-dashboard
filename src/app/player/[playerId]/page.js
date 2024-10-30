@@ -8,18 +8,29 @@ import {
   sum,
   nDistinct,
 } from "@tidyjs/tidy";
-import { getPlayerEvents, getRowsFromEvents } from "@/lib/api";
+import { getPlayerEvents, getRowsFromEvents, PlayerLeagues } from "@/lib/api";
 import { PieChart } from "@/components/PieChart";
 import { useEffect, useState } from "react";
 export default async function Page({ params }) {
   const [summaries, setSummaries] = useState([]);
+  const [loading, setLoading] = useState(0);
   useEffect(() => {
     // wake api
     const queryApi = async () => {
-      const playerEvents = await getPlayerEvents(params.playerId);
-      var [rows, _] = await getRowsFromEvents(playerEvents);
+      var leagueIds = await PlayerLeagues(params.playerId);
+      const allRows = []; // Array to collect all rows
+
+      for (const idx in leagueIds) {
+        setLoading(idx / (leagueIds.length - 1));
+        const playerEvents = await getPlayerEvents(
+          params.playerId,
+          leagueIds[idx]
+        );
+        var [rows, _] = await getRowsFromEvents(playerEvents);
+        allRows.push(...rows);
+      }
       const summaries = tidy(
-        rows,
+        allRows,
         groupBy(
           ["playerId"],
           [
@@ -47,6 +58,10 @@ export default async function Page({ params }) {
 
     queryApi();
   }, []);
+
+  if (loading !== 1) {
+    return <>Fetching lifetime games {(loading * 100).toFixed(0)}%</>;
+  }
 
   return (
     <>
