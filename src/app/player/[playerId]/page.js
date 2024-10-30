@@ -1,32 +1,18 @@
-import { PlayerGameEvents, GetGameLeagueId } from "@/lib/api";
 import {
   tidy,
   first,
   mutate,
-  leftJoin,
   summarize,
   groupBy,
   sum,
   nDistinct,
 } from "@tidyjs/tidy";
-
+import { getPlayerEvents, getRowsFromEvents } from "@/lib/api";
 import { PieChart } from "@/components/PieChart";
 export default async function Page({ params }) {
-  let rows = await PlayerGameEvents(params.playerId);
-  const game_league_mapping = await GetGameLeagueId(
-    rows.map((row) => row.gameId)
-  );
-  rows = tidy(rows, leftJoin(game_league_mapping, { by: "gameId" }));
-  rows = tidy(
-    rows,
-    mutate({
-      team: (d) =>
-        d["teamId"] == d["awayTeamId"] ? d["awayTeam"] : d["homeTeam"],
-      date: (d) => new Date(d["date"]),
-      game_time: (d) => Number(d["time"].split(":")[0]) - 12, // Convert to pm game
-    })
-  );
-
+  const playerEvents = await getPlayerEvents(params.playerId);
+  var [rows, _] = await getRowsFromEvents(playerEvents);
+  console.log(rows);
   const summaries = tidy(
     rows,
     groupBy(
@@ -55,7 +41,7 @@ export default async function Page({ params }) {
   return (
     <>
       <div>
-        <h1>Life time Stats (since like 2 years ago)</h1>
+        <h1>Life time Stats</h1>{" "}
       </div>
       <div className="bg-slate-900 rounded-lg">
         <PieChart

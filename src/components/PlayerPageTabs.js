@@ -1,6 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
-import { getGamesMetadata, getGameEvents } from "@/lib/api-fetching";
+import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Typography from "@mui/material/Typography";
 

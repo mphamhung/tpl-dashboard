@@ -13,7 +13,6 @@ export default function Page({ params }) {
       var [events, _] = await getGameRows(params.gameId, params.teamId);
       setRows(events);
     };
-
     queryApi();
   }, []);
 

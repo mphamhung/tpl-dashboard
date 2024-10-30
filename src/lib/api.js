@@ -33,7 +33,9 @@ export async function getGameEvents(gameId, teamId) {
   });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    throw new Error(
+      "Failed to fetch data for game: " + gameId + " teamId: " + teamId
+    );
   }
 
   const fetchedData = await res.json();
@@ -113,10 +115,9 @@ function preprocess(game_rows) {
   return [rows, graph];
 }
 
-export async function getGameRows(gameId, teamId) {
-  const teamEvents = await getGameEvents(gameId, teamId);
+export async function getRowsFromEvents(events) {
   const stats_summary = {};
-  for (const event of teamEvents) {
+  for (const event of events) {
     if (!(event.gameId in stats_summary)) {
       stats_summary[event.gameId] = {};
     }
@@ -146,7 +147,39 @@ export async function getGameRows(gameId, teamId) {
       data.push(stats_summary[gameId][playerId]);
     });
   });
-  return preprocess(data);
+
+  let [rows, graph] = preprocess(data);
+
+  let games = await getGames();
+  const gameIds = rows.map((row) => row.gameId);
+  console.log(gameIds);
+  games = games.filter((game) => gameIds.includes(game.id));
+  const mapping = new Map(
+    games.map((game) => {
+      return [String(game.id), game];
+    })
+  );
+  rows = tidy(
+    rows,
+    mutate({
+      team: (d) =>
+        d["teamId"] == mapping.get(d["gameId"]).awayTeamId
+          ? mapping.get(d["gameId"]).awayTeam
+          : mapping.get(d["gameId"]).homeTeam,
+      date: (d) => new Date(mapping.get(d["gameId"]).date),
+      game_time: (d) =>
+        Number(mapping.get(d["gameId"]).time.split("-")[0].split(":")[0]) -
+        12 +
+        "pm",
+    })
+  );
+  rows.reverse();
+  return [rows, graph];
+}
+
+export async function getGameRows(gameId, teamId) {
+  const teamEvents = await getGameEvents(gameId, teamId);
+  return getRowsFromEvents(teamEvents);
 }
 
 export async function getLeagueIds() {
@@ -165,8 +198,9 @@ export async function getAllGameEvents(leagueId) {
     cache: use_cache ? "default" : "no-store", // Use cache if not Wednesday
   }).then((response) => response.json());
 
-  games = games.filter((g) => g.leagueId === leagueId);
-
+  if (leagueId !== undefined) {
+    games = games.filter((game) => game.leagueId === leagueId);
+  }
   const events = await Promise.all(
     games.map((game) =>
       Promise.all([
@@ -175,11 +209,29 @@ export async function getAllGameEvents(leagueId) {
       ])
     )
   );
-
-  return events;
+  return events.flat().flat();
 }
 
-export async function PlayerGameEvents(playerId, leagueId) {
+export async function getPlayer(playerId) {
+  const player = await fetch(serverUrl + "player/" + String(playerId)).then(
+    (response) => response.json()
+  );
+  return player;
+}
+
+export async function getPlayerEvents(playerId, leagueId) {
   const events = await getAllGameEvents(leagueId);
-  console.log(events);
+  return events.filter((event) => String(event.player.id) === String(playerId));
+}
+
+export async function PlayerLeagues(playerId) {
+  const all_teams = await fetch(serverUrl + "teams", {
+    cache: use_cache ? "default" : "no-store", // Use cache if not Wednesday
+  }).then((response) => response.json());
+
+  const leagueIds = all_teams
+    .filter((team) => team.players.some((player) => player.id === playerId))
+    .map((team) => team.leagueId);
+
+  return leagueIds;
 }

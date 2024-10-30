@@ -141,7 +141,7 @@ function Row(props) {
               ))}
               {secondary_columns.includes("player page") ? (
                 <div className="col-span-1 col-start-2 underline text-blue-600 hover:text-blue-800 visited:text-purple-600">
-                  <Link href={`/player/${row["player page"]}`}>
+                  <Link href={`/player/${row["playerId"]}`}>
                     {" "}
                     View Player Profile
                   </Link>
