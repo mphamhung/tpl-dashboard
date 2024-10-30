@@ -146,6 +146,7 @@ export async function getRowsFromEvents(events) {
   let games = await getGames();
   const gameIds = rows.map((row) => row.gameId);
   games = games.filter((game) => gameIds.includes(game.id));
+  console.log(games);
   const mapping = new Map(
     games.map((game) => {
       return [String(game.id), game];
@@ -160,9 +161,12 @@ export async function getRowsFromEvents(events) {
           : mapping.get(d["gameId"]).homeTeam,
       date: (d) => new Date(mapping.get(d["gameId"]).date),
       game_time: (d) =>
-        Number(mapping.get(d["gameId"]).time.split("-")[0].split(":")[0]) -
-        12 +
-        "pm",
+        mapping.get(d["gameId"]).time.includes("PM")
+          ? Number(mapping.get(d["gameId"]).time.split("-")[0].split(":")[0]) +
+            "pm"
+          : Number(mapping.get(d["gameId"]).time.split("-")[0].split(":")[0]) -
+            12 +
+            "pm",
     })
   );
   rows.reverse();

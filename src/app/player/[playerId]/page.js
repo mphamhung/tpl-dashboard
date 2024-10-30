@@ -1,3 +1,4 @@
+"use client";
 import {
   tidy,
   first,
@@ -9,34 +10,47 @@ import {
 } from "@tidyjs/tidy";
 import { getPlayerEvents, getRowsFromEvents } from "@/lib/api";
 import { PieChart } from "@/components/PieChart";
+import { useEffect, useState } from "react";
 export default async function Page({ params }) {
-  const playerEvents = await getPlayerEvents(params.playerId);
-  var [rows, _] = await getRowsFromEvents(playerEvents);
-  const summaries = tidy(
-    rows,
-    groupBy(
-      ["playerId"],
-      [
-        summarize({
-          name: first("name"),
-          goals: sum("goals"),
-          assists: sum("assists"),
-          second_assists: sum("second_assists"),
-          blocks: sum("blocks"),
-          throwaways: sum("throwaways"),
-          drops: sum("drops"),
-          other_passes: sum("other_passes"),
-          games_played: nDistinct("gameId"),
-        }),
-      ]
-    ),
-    mutate({
-      "game contributions": (d) =>
-        d["goals"] + d["assists"] + d["second_assists"],
-      "game negatives": (d) => d["throwaways"] + d["drops"],
-    })
-  )[0];
-  rows.reverse();
+  const [rows, setRows] = useState([]);
+  const [summaries, setSummaries] = useState([]);
+  useEffect(() => {
+    // wake api
+    const queryApi = async () => {
+      const playerEvents = await getPlayerEvents(params.playerId);
+      var [rows, _] = await getRowsFromEvents(playerEvents);
+      const summaries = tidy(
+        rows,
+        groupBy(
+          ["playerId"],
+          [
+            summarize({
+              name: first("name"),
+              goals: sum("goals"),
+              assists: sum("assists"),
+              second_assists: sum("second_assists"),
+              blocks: sum("blocks"),
+              throwaways: sum("throwaways"),
+              drops: sum("drops"),
+              other_passes: sum("other_passes"),
+              games_played: nDistinct("gameId"),
+            }),
+          ]
+        ),
+        mutate({
+          "game contributions": (d) =>
+            d["goals"] + d["assists"] + d["second_assists"],
+          "game negatives": (d) => d["throwaways"] + d["drops"],
+        })
+      )[0];
+      rows.reverse();
+      setRows(rows);
+      setSummaries(summaries);
+    };
+
+    queryApi();
+  }, []);
+
   return (
     <>
       <div>
