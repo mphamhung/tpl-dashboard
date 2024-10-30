@@ -12,7 +12,6 @@ import { getPlayerEvents, getRowsFromEvents } from "@/lib/api";
 import { PieChart } from "@/components/PieChart";
 import { useEffect, useState } from "react";
 export default async function Page({ params }) {
-  const [rows, setRows] = useState([]);
   const [summaries, setSummaries] = useState([]);
   useEffect(() => {
     // wake api
@@ -43,8 +42,6 @@ export default async function Page({ params }) {
           "game negatives": (d) => d["throwaways"] + d["drops"],
         })
       )[0];
-      rows.reverse();
-      setRows(rows);
       setSummaries(summaries);
     };
 

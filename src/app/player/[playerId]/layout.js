@@ -1,5 +1,4 @@
 import { PlayerLeagues, getPlayer } from "@/lib/api";
-import { tidy, distinct, leftJoin, first } from "@tidyjs/tidy";
 import { PlayerPageTabs } from "@/components/PlayerPageTabs";
 import { Suspense } from "react";
 export default async function PlayerPageLayout({ children, params }) {

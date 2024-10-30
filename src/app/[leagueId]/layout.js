@@ -1,9 +1,6 @@
-import GamesList from "@/components/GamesList";
-import GameListByDate from "@/components/GameListByDate";
-import { Children, Suspense } from "react";
-import { getGames, getGameEvents } from "@/lib/api";
+import { getGames } from "@/lib/api";
 import { DateSelect } from "@/components/DateSelect";
-import { tidy, distinct, mutate } from "@tidyjs/tidy";
+import { tidy, distinct } from "@tidyjs/tidy";
 import Link from "next/link";
 
 export default async function HomeLayout({ children, params }) {
