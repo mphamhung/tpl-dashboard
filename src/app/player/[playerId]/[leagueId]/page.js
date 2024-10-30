@@ -1,10 +1,25 @@
+"use client";
 import { getPlayerEvents, getRowsFromEvents } from "@/lib/api";
 import StatsAcrossTime from "@/components/StatsAcrossTime";
 import { CollapsableStatTable } from "@/components/CollapsableStatTable";
+import { useEffect, useState } from "react";
 
 export default async function Page({ params }) {
-  const playerEvents = await getPlayerEvents(params.playerId, params.leagueId);
-  var [rows, _] = await getRowsFromEvents(playerEvents);
+  const [rows, setRows] = useState([]);
+  useEffect(() => {
+    // wake api
+    const queryApi = async () => {
+      const playerEvents = await getPlayerEvents(
+        params.playerId,
+        params.leagueId
+      );
+      var [rows, _] = await getRowsFromEvents(playerEvents);
+      setRows(rows);
+    };
+
+    queryApi();
+  }, []);
+
   return (
     <>
       <CollapsableStatTable

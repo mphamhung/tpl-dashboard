@@ -3,7 +3,7 @@ import { WakeIndicator } from "@/components/WakeIndicator";
 export default function NavigationBar() {
   const links = [
     { href: "/#", text: "Current Season" },
-    { href: "/rankings", text: "View All Data" },
+    { href: "/rankings", text: "Rankings" },
     { href: "/leagues", text: "Past Seasons" },
     { href: "/search", text: "Find Player" },
   ];

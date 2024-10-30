@@ -1,18 +1,11 @@
 /* eslint-disable require-jsdoc */
 "use server";
 const serverUrl = "https://tplapp.onrender.com/";
-import {
-  tidy,
-  mutate,
-  groupBy,
-  summarize,
-  sum,
-  filter,
-  last,
-} from "@tidyjs/tidy";
+import { tidy, mutate, groupBy, summarize, sum } from "@tidyjs/tidy";
 
 const today = new Date();
-const use_cache = today.getDay() !== 3; // true on days other than Wednesday
+// const use_cache = today.getDay() !== 3; // true on days other than Wednesday
+const use_cache = true; // true on days other than Wednesday
 
 export async function getGames(leagueId = null) {
   const res = await fetch(

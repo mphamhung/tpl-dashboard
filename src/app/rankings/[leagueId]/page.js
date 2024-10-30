@@ -1,0 +1,93 @@
+import { getAllGameEvents, getRowsFromEvents } from "@/lib/api";
+import StatsAcrossTime from "@/components/StatsAcrossTime";
+import { CollapsableStatTable } from "@/components/CollapsableStatTable";
+import {
+  tidy,
+  groupBy,
+  summarize,
+  sum,
+  first,
+  nDistinct,
+  mutate,
+} from "@tidyjs/tidy";
+
+export default async function Page({ params }) {
+  const allEvents = await getAllGameEvents(params.leagueId);
+  var [rows, _] = await getRowsFromEvents(allEvents);
+  rows = tidy(
+    rows,
+    groupBy(
+      ["playerId"],
+      [
+        summarize({
+          name: first("name"),
+          goals: sum("goals"),
+          assists: sum("assists"),
+          second_assists: sum("second_assists"),
+          blocks: sum("blocks"),
+          throwaways: sum("throwaways"),
+          drops: sum("drops"),
+          other_passes: sum("other_passes"),
+          games_played: nDistinct("gameId"),
+        }),
+      ]
+    ),
+    mutate({
+      GC: (d) => d["goals"] + d["assists"] + d["second_assists"],
+      "% pass": (d) =>
+        (
+          1 -
+          d["throwaways"] /
+            (d["throwaways"] +
+              d["other_passes"] +
+              d["assists"] +
+              d["second_assists"])
+        ).toFixed(2),
+      "g pg": (d) => (d["goals"] / d["games_played"]).toFixed(2),
+      "a pg": (d) => (d["assists"] / d["games_played"]).toFixed(2),
+      "2a pg": (d) => (d["second_assists"] / d["games_played"]).toFixed(2),
+      "b pg": (d) => (d["blocks"] / d["games_played"]).toFixed(2),
+      "ta pg": (d) => (d["throwaways"] / d["games_played"]).toFixed(2),
+      "dr pg": (d) => (d["drops"] / d["games_played"]).toFixed(2),
+      "touches pg": (d) => (d["other_passes"] / d["games_played"]).toFixed(2),
+    })
+  );
+
+  //   rows = tidy(rows, groupBy("playerId"));
+  return (
+    <>
+      <CollapsableStatTable
+        rows={rows}
+        primary_columns={[
+          "name",
+          "g pg",
+          "a pg",
+          "2a pg",
+          "b pg",
+          "touches pg",
+          "% pass",
+          "games_played",
+        ]}
+        secondary_columns={[
+          "name",
+          "g pg",
+          "a pg",
+          "2a pg",
+          "b pg",
+          "ta pg",
+          "dr pg",
+          "touches pg",
+          "games_played",
+          "% pass",
+          "% Goal Contributions",
+          "% Touches",
+          "throwaways",
+          "drops",
+          "player page",
+        ]}
+        abbr={false}
+      />
+      <StatsAcrossTime rows={rows} />
+    </>
+  );
+}

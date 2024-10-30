@@ -170,6 +170,7 @@ export function CollapsableStatTable({
   rows,
   primary_columns,
   secondary_columns,
+  abbr = true,
 }) {
   const [sortKey, setSortKey] = useState("");
   const [reverse, setReverse] = useState(false);
@@ -199,7 +200,7 @@ export function CollapsableStatTable({
                 }}
                 className="text-s font-bold font-sans"
               >
-                <div>{Abbr(key)}</div>
+                <div>{abbr ? Abbr(key) : key}</div>
               </TableCell>
             ))}
           </TableRow>
