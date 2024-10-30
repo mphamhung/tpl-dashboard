@@ -12,7 +12,6 @@ import { PieChart } from "@/components/PieChart";
 export default async function Page({ params }) {
   const playerEvents = await getPlayerEvents(params.playerId);
   var [rows, _] = await getRowsFromEvents(playerEvents);
-  console.log(rows);
   const summaries = tidy(
     rows,
     groupBy(
