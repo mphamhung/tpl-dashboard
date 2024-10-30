@@ -146,7 +146,6 @@ export async function getRowsFromEvents(events) {
   let games = await getGames();
   const gameIds = rows.map((row) => row.gameId);
   games = games.filter((game) => gameIds.includes(game.id));
-  console.log(games);
   const mapping = new Map(
     games.map((game) => {
       return [String(game.id), game];
