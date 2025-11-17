@@ -228,7 +228,7 @@ export async function getGameRows(gameId, teamId) {
     filter((d) => d.gameId === gameId && d.teamId === teamId)
   );
   // console.log(game_rows);
-  return game_rows;
+  return preprocess(game_rows);
 }
 
 export async function getPlayerRows(playerId) {

@@ -7,12 +7,16 @@ import {
   groupBy,
   sum,
   nDistinct,
+  max,
 } from "@tidyjs/tidy";
 import { getPlayerRows } from "@/lib/api";
 import { PieChart } from "@/components/PieChart";
 import { useEffect, useState } from "react";
+import { LinePlot, ScatterPlot } from "@/components/Contributions";
+
 export default async function Page({ params }) {
   const [summaries, setSummaries] = useState([]);
+  const [lifetimeStats, setLifeTimeStats] = useState([]);
   const [loading, setLoading] = useState(0);
   useEffect(() => {
     // wake api
@@ -43,6 +47,54 @@ export default async function Page({ params }) {
         })
       )[0];
       setSummaries(summaries);
+
+      const stats = tidy(
+        allRows,
+        groupBy(
+          ["leagueId"],
+          [
+            summarize({
+              name: first("name"),
+              goals: sum("goals"),
+              assists: sum("assists"),
+              second_assists: sum("second_assists"),
+              blocks: sum("blocks"),
+              throwaways: sum("throwaways"),
+              drops: sum("drops"),
+              other_passes: sum("other_passes"),
+              games_played: nDistinct("gameId"),
+              max_goals: max("goals"),
+              max_assists: max("assists"),
+              max_second_assists: max("second_assists"),
+              max_blocks: max("blocks"),
+              max_throwaways: max("throwaways"),
+              max_drops: max("drops"),
+            }),
+          ]
+        ),
+        mutate({
+          GC: (d) => d["goals"] + d["assists"] + d["second_assists"],
+          "% pass": (d) =>
+            (
+              1 -
+              d["throwaways"] /
+                (d["throwaways"] +
+                  d["other_passes"] +
+                  d["assists"] +
+                  d["second_assists"])
+            ).toFixed(2),
+          "g pg": (d) => (d["goals"] / d["games_played"]).toFixed(2),
+          "a pg": (d) => (d["assists"] / d["games_played"]).toFixed(2),
+          "2a pg": (d) => (d["second_assists"] / d["games_played"]).toFixed(2),
+          "b pg": (d) => (d["blocks"] / d["games_played"]).toFixed(2),
+          "ta pg": (d) => (d["throwaways"] / d["games_played"]).toFixed(2),
+          "dr pg": (d) => (d["drops"] / d["games_played"]).toFixed(2),
+          "touches pg": (d) =>
+            (d["other_passes"] / d["games_played"]).toFixed(2),
+        })
+      );
+      console.log(stats);
+      setLifeTimeStats(stats);
       setLoading(1);
     };
 
@@ -79,6 +131,13 @@ export default async function Page({ params }) {
           TUC profile
         </a>
       </div>
+      <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"g pg"} />
+      <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"a pg"} />
+      <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"2a pg"} />
+      <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"b pg"} />
+      <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"ta pg"} />
+      <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"dr pg"} />
+      <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"touches pg"} />
     </>
   );
 }

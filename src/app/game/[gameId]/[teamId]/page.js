@@ -4,13 +4,16 @@ import { useEffect, useState } from "react";
 import StatTable from "@/components/StatTable";
 import { StackedBar, ScatterPlot } from "@/components/Contributions";
 import { CollapsableStatTable } from "@/components/CollapsableStatTable";
+import { tidy, mutate } from "@tidyjs/tidy";
+
 export default function Page({ params }) {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
     // wake api
     const queryApi = async () => {
-      var events = await getGameRows(params.gameId, params.teamId);
+      var [events, _] = await getGameRows(params.gameId, params.teamId);
+      console.log(events);
       setRows(events);
     };
     queryApi();

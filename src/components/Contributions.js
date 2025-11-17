@@ -1,5 +1,5 @@
 "use client";
-import { Bar, Scatter } from "react-chartjs-2";
+import { Bar, Scatter, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -22,6 +22,47 @@ ChartJS.register(
   Legend
 );
 import SortBy from "sort-by";
+
+export function LinePlot({ rows, x_key, y_key }) {
+  const [hydrated, setHydrated] = React.useState(false);
+  React.useEffect(() => {
+    setHydrated(true);
+  }, []);
+  if (!hydrated) {
+    // Returns null on first render, so the client and server match
+    return null;
+  }
+  const labels = rows.map((row) => {
+    return row[x_key];
+  });
+
+  const options = {
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+    showTooltips: true,
+    tooltipEvents: [],
+  };
+
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        label: `${y_key} over time`,
+        data: rows.map((row) => {
+          return { x: row[x_key], y: row[y_key] };
+        }),
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        borderColor: "rgba(255, 99, 132, 0.5)",
+        pointRadius: 2,
+        tension: 0.1,
+      },
+    ],
+  };
+  return <Line className="bg-black rounded-lg" data={data} options={options} />;
+}
 
 export function ScatterPlot({ rows, x_key, y_key }) {
   const [hydrated, setHydrated] = React.useState(false);
