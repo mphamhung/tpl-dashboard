@@ -10,7 +10,7 @@ export default function Page({ params }) {
   useEffect(() => {
     // wake api
     const queryApi = async () => {
-      var [events, _] = await getGameRows(params.gameId, params.teamId);
+      var events = await getGameRows(params.gameId, params.teamId);
       setRows(events);
     };
     queryApi();

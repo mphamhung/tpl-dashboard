@@ -1,10 +1,18 @@
-import { getPlayerEvents, getRowsFromEvents } from "@/lib/api";
+// import { getPlayerEvents, getRowsFromEvents } from "@/lib/api";
 import StatsAcrossTime from "@/components/StatsAcrossTime";
 import { CollapsableStatTable } from "@/components/CollapsableStatTable";
+import { getPlayerRows } from "@/lib/api";
+import { tidy, filter, mutate } from "@tidyjs/tidy";
 
 export default async function Page({ params }) {
-  const playerEvents = await getPlayerEvents(params.playerId, params.leagueId);
-  var [rows, _] = await getRowsFromEvents(playerEvents);
+  const data = await getPlayerRows(params.playerId);
+  const rows = tidy(
+    data,
+    filter((d) => d.leagueId === params.leagueId),
+    mutate({
+      date: (d) => new Date(Date.parse(`${d.date} EST`)),
+    })
+  );
   return (
     <>
       <CollapsableStatTable

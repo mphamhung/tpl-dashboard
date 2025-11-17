@@ -24,7 +24,7 @@ export const GameCardRow = ({ game, name, teamId, score, is_winner }) => (
       <Score score={score} is_winner={is_winner}></Score>
     </div>
     <Link
-      href={`/game/${game.id}/${teamId}`}
+      href={`/game/${game.gameId}/${teamId}`}
       className="col-start-6 col-span-1 bg-slate-800 hover:bg-slate-700 rounded-r-lg flex justify-center"
     >
       {"->"}

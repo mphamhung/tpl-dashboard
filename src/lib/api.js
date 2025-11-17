@@ -222,8 +222,33 @@ export async function getRowsFromEvents(events) {
 }
 
 export async function getGameRows(gameId, teamId) {
-  const teamEvents = await getGameEvents(gameId, teamId);
-  return getRowsFromEvents(teamEvents);
+  const game_data = await loadSummaryStats();
+  const game_rows = tidy(
+    game_data,
+    filter((d) => d.gameId === gameId && d.teamId === teamId)
+  );
+  // console.log(game_rows);
+  return game_rows;
+}
+
+export async function getPlayerRows(playerId) {
+  const game_data = await loadSummaryStats();
+  const game_info = await loadGameInfo();
+
+  const game_rows = tidy(
+    game_data,
+    filter((d) => d.playerId === playerId),
+    leftJoin(
+      tidy(
+        game_info,
+        mutate({
+          gameId: (d) => d["id"],
+        })
+      ),
+      { by: "gameId" }
+    )
+  );
+  return game_rows;
 }
 
 export async function getLeagueIds() {

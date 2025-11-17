@@ -1,8 +1,13 @@
-import { PlayerLeagues, getPlayer } from "@/lib/api";
+import { getPlayerRows, getPlayer } from "@/lib/api";
 import { PlayerPageTabs } from "@/components/PlayerPageTabs";
 import { Suspense } from "react";
+import { tidy, distinct } from "@tidyjs/tidy";
 export default async function PlayerPageLayout({ children, params }) {
-  var leagueIds = await PlayerLeagues(params.playerId);
+  const allRows = await getPlayerRows(params.playerId);
+  const leagueIds = tidy(allRows, distinct("leagueId")).map(
+    (d) => d["leagueId"]
+  );
+
   leagueIds.sort((a, b) => b - a);
   const player = await getPlayer(params.playerId);
 

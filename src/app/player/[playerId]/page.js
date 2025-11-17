@@ -8,7 +8,7 @@ import {
   sum,
   nDistinct,
 } from "@tidyjs/tidy";
-import { getPlayerEvents, getRowsFromEvents, PlayerLeagues } from "@/lib/api";
+import { getPlayerRows } from "@/lib/api";
 import { PieChart } from "@/components/PieChart";
 import { useEffect, useState } from "react";
 export default async function Page({ params }) {
@@ -17,18 +17,7 @@ export default async function Page({ params }) {
   useEffect(() => {
     // wake api
     const queryApi = async () => {
-      var leagueIds = await PlayerLeagues(params.playerId);
-      const allRows = []; // Array to collect all rows
-
-      for (const idx in leagueIds) {
-        setLoading((Number(idx) + 1) / leagueIds.length);
-        const playerEvents = await getPlayerEvents(
-          params.playerId,
-          leagueIds[idx]
-        );
-        var [rows, _] = await getRowsFromEvents(playerEvents);
-        allRows.push(...rows);
-      }
+      const allRows = await getPlayerRows(params.playerId);
       const summaries = tidy(
         allRows,
         groupBy(
@@ -54,6 +43,7 @@ export default async function Page({ params }) {
         })
       )[0];
       setSummaries(summaries);
+      setLoading(1);
     };
 
     queryApi();
