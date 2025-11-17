@@ -1,22 +1,72 @@
 /* eslint-disable require-jsdoc */
-"use server";
+// "use server";
 const serverUrl = "https://tplapp.onrender.com/";
-import { tidy, mutate, groupBy, summarize, sum } from "@tidyjs/tidy";
+const summary_stats_raw =
+  "https://raw.githubusercontent.com/mphamhung/automations/refs/heads/main/data/tpl_stats_summary.json";
+const game_info_raw =
+  "https://raw.githubusercontent.com/mphamhung/automations/refs/heads/main/data/tpl_game_info.json";
 
-const today = new Date();
-const use_cache = today.getDay() !== 3; // true on days other than Wednesday
+import {
+  tidy,
+  mutate,
+  groupBy,
+  summarize,
+  sum,
+  filter,
+  select,
+  leftJoin,
+} from "@tidyjs/tidy";
+
+async function loadSummaryStats() {
+  const res = await fetch(summary_stats_raw, { cache: "no-cache" });
+  const text = await res.text();
+  const result = tidy(JSON.parse(text));
+  return result;
+}
+async function loadGameInfo() {
+  const res = await fetch(game_info_raw, { cache: "no-cache" });
+  const text = await res.text();
+  const result = tidy(JSON.parse(text));
+  return result;
+}
 
 export async function getGames(leagueId = null) {
-  const res = await fetch(
-    serverUrl + "games" + `${leagueId ? "/" + String(leagueId) : ""}`,
-    {
-      cache: use_cache ? "default" : "no-store", // Use cache if not Wednesday
-    }
+  const data = await loadSummaryStats();
+  const game_data = await loadGameInfo();
+  const game_times = tidy(
+    game_data,
+    mutate({
+      gameId: (d) => d["id"],
+    }),
+    select([
+      "leagueId",
+      "gameId",
+      "time",
+      "location",
+      "homeTeam",
+      "awayTeam",
+      "homeTeamId",
+      "awayTeamId",
+      "date",
+    ])
   );
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
+  const keys = ["gameId", "teamId"];
+  return tidy(
+    data,
+    filter((d) => d.leagueId === leagueId),
+    groupBy(keys, [summarize({ score: sum("goals") })]),
+    groupBy("gameId", [
+      summarize({
+        scores: (items) => items.map((d) => d.score),
+        team_ids: (items) => items.map((d) => d.teamId),
+      }),
+    ]),
+    leftJoin(game_times, { by: ["gameId", "id"] }),
+    mutate({
+      homeTeamScore: (d) => d["scores"][d["team_ids"].indexOf(d["homeTeamId"])],
+      awayTeamScore: (d) => d["scores"][d["team_ids"].indexOf(d["awayTeamId"])],
+    })
+  );
 }
 
 export async function getGameEvents(gameId, teamId) {

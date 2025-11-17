@@ -19,8 +19,8 @@ export async function GameListByDate({ gamelist }) {
   gamelist.sort((a, b) => a.gameTime - b.gameTime);
 
   async function createGameCard(game) {
-    let homeScore = await getScore(game.id, game.homeTeamId);
-    let awayScore = await getScore(game.id, game.awayTeamId);
+    let homeScore = game.homeTeamScore;
+    let awayScore = game.awayTeamScore;
     return <GameCard game={game} homeScore={homeScore} awayScore={awayScore} />;
   }
 
