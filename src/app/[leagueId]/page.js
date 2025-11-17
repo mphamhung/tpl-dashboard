@@ -1,8 +1,9 @@
 "use client";
 
-import { tidy, distinct } from "@tidyjs/tidy";
+import { tidy, mutate, summarize, max } from "@tidyjs/tidy";
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { getGames } from "@/lib/api";
 
 const Page = () => {
   const router = useRouter();
@@ -12,13 +13,17 @@ const Page = () => {
   useEffect(() => {
     // Perform the redirect
     const fetchDates = async () => {
-      const res = await fetch(`https://tplapp.onrender.com/games/${leagueId}`);
-      const games = await res.json();
-      const dates = tidy(games, distinct("date")).map((row) =>
-        Date.parse(`${row.date} EST`)
-      );
-      dates.reverse();
-      router.push(`/${leagueId}/${dates[0]}`);
+      const res = await getGames(leagueId);
+      const max_date = tidy(
+        res,
+        mutate({
+          parsed_date: (row) => Date.parse(`${row.date} EST`),
+        }),
+        summarize({
+          max_date: max("parsed_date"),
+        })
+      )[0]["max_date"];
+      router.push(`/${leagueId}/${max_date}`);
     };
     fetchDates();
   }, []);

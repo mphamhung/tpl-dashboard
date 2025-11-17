@@ -17,13 +17,13 @@ import {
   leftJoin,
 } from "@tidyjs/tidy";
 
-async function loadSummaryStats() {
+export async function loadSummaryStats() {
   const res = await fetch(summary_stats_raw, { cache: "no-cache" });
   const text = await res.text();
   const result = tidy(JSON.parse(text));
   return result;
 }
-async function loadGameInfo() {
+export async function loadGameInfo() {
   const res = await fetch(game_info_raw, { cache: "no-cache" });
   const text = await res.text();
   const result = tidy(JSON.parse(text));
