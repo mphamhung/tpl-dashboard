@@ -1,6 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { loadGameInfo } from "@/lib/api";
+import { tidy, summarize, max, distinct } from "@tidyjs/tidy";
 
 const Page = () => {
   const router = useRouter();
@@ -8,15 +10,14 @@ const Page = () => {
   useEffect(() => {
     // wake api
     const queryApi = async () => {
-      const res = await fetch("https://tplapp.onrender.com/teams");
-      const teams = await res.json();
-
-      let maxLeagueId = -1;
-      teams.forEach((element) => {
-        if (Number(element.leagueId) > maxLeagueId) {
-          maxLeagueId = Number(element.leagueId);
-        }
-      });
+      const res = await loadGameInfo();
+      const maxLeagueId = tidy(
+        res,
+        distinct("leagueId"),
+        summarize({
+          maxLeagueId: max("leagueId"),
+        })
+      )[0]["maxLeagueId"];
       setLatestLeagueId(maxLeagueId);
     };
 

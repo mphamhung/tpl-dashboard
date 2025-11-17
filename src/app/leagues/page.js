@@ -1,7 +1,12 @@
-import { getLeagueIds } from "@/lib/api";
+import { loadGameInfo } from "@/lib/api";
 import Link from "next/link";
+import { tidy, distinct } from "@tidyjs/tidy";
+
 export default async function Page() {
-  var leagueIds = await getLeagueIds();
+  const rows = await loadGameInfo();
+  const leagueIds = tidy(rows, distinct("leagueId"))
+    .map((d) => Number(d.leagueId))
+    .sort((a, b) => b - a);
   console.log(leagueIds);
   return (
     <>

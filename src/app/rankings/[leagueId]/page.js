@@ -1,4 +1,4 @@
-import { getAllGameEvents, getRowsFromEvents } from "@/lib/api";
+import { loadSummaryStats } from "@/lib/api";
 import StatsAcrossTime from "@/components/StatsAcrossTime";
 import { CollapsableStatTable } from "@/components/CollapsableStatTable";
 import {
@@ -10,11 +10,15 @@ import {
   nDistinct,
   mutate,
   max,
+  filter,
 } from "@tidyjs/tidy";
 
 export default async function Page({ params }) {
-  const allEvents = await getAllGameEvents(params.leagueId);
-  var [rows, _] = await getRowsFromEvents(allEvents);
+  const all = await loadSummaryStats();
+  var rows = tidy(
+    all,
+    filter((d) => d.leagueId === params.leagueId)
+  );
   rows = tidy(
     rows,
     groupBy(
