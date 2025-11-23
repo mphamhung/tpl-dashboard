@@ -2,92 +2,65 @@
 import { useState, useEffect } from "react";
 import { getGamesMetadata, getGameEvents } from "@/lib/api-fetching";
 import { useRouter, usePathname } from "next/navigation";
+import Tabs from "./Tabs"; // import the reusable Tabs component
 
-export function GamePageTabs({ game }) {
-  const [selectedTab, setSelectedTab] = useState("overview");
-  const [homeScore, setHomeScore] = useState(0);
-  const [awayScore, setAwayScore] = useState(0);
+export function GamePageTabs({ game, homeScore, awayScore }) {
   const router = useRouter();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    // wake api
-    const getScore = async (events) => {
-      return events.filter((event) => event.eventType == "Goal").length;
-    };
-
-    const queryScores = async (game) => {
-      const [homeTeamEvents, awayTeamEvents] = await Promise.all([
-        getGameEvents(game.id, game.homeTeamId),
-        getGameEvents(game.id, game.awayTeamId),
-      ]);
-
-      const [homeScore, awayScore] = await Promise.all([
-        getScore(homeTeamEvents),
-        getScore(awayTeamEvents),
-      ]);
-      setHomeScore(homeScore);
-      setAwayScore(awayScore);
-    };
-
-    const queryApi = async () => {
-      queryScores(game);
-
-      if (pathname.split("/").pop() == game.homeTeamId) {
-        setSelectedTab("home");
-      }
-      if (pathname.split("/").pop() == game.awayTeamId) {
-        setSelectedTab("away");
-      }
-    };
-    queryApi();
-  }, []);
+  const [selectedTab, setSelectedTab] = useState("overview");
+  console.log(game.id);
+  const tabs = [
+    {
+      label: "Game Overview",
+      value: "overview",
+      href: game ? `/game/${game.gameId}` : null,
+    },
+    {
+      label: (
+        <div className="grid grid-cols-5">
+          <div className="col-span-4">{game.homeTeam}</div>
+          <div
+            className={`py-2 text-center ${
+              homeScore > awayScore
+                ? "bg-score-winner"
+                : homeScore === awayScore
+                  ? ""
+                  : "bg-score-loser"
+            }`}
+          >
+            {homeScore}
+          </div>
+        </div>
+      ),
+      value: "home",
+      href: game ? `/game/${game.gameId}/${game.homeTeamId}` : null,
+    },
+    {
+      label: (
+        <div className="grid grid-cols-5">
+          <div className="col-span-4">{game.awayTeam}</div>
+          <div
+            className={`py-2 text-center ${
+              awayScore > homeScore
+                ? "bg-score-winner"
+                : homeScore === awayScore
+                  ? ""
+                  : "bg-score-loser"
+            }`}
+          >
+            {awayScore}
+          </div>
+        </div>
+      ),
+      value: "away",
+      href: game ? `/game/${game.gameId}/${game.awayTeamId}` : null,
+    },
+  ];
 
   return (
-    <div className="grid grid-cols-5 gap-1">
-      <div
-        className={`font-sans h-12 text-xs text-left line-clamp-2 col-span-1 rounded-t-lg px-3 ${selectedTab == "overview" ? "bg-gray-600" : "bg-gray-800 border-b-black border-b-2"} bg-gray-600 px-3 `}
-        onClick={() => {
-          setSelectedTab("overview");
-          if (game) {
-            router.push(`/game/${game.id}`);
-          }
-        }}
-      >
-        Game Overview
-      </div>
-      <div
-        className={`font-sans h-12 text-xs text-left line-clamp-2 col-span-2 rounded-t-lg px-3 grid grid-cols-5 ${selectedTab == "home" ? "bg-gray-600" : "bg-gray-800 border-b-black border-b-2"} bg-gray-600 px-3 `}
-        onClick={() => {
-          setSelectedTab("home");
-          if (game) {
-            router.push(`/game/${game.id}/${game.homeTeamId}`);
-          }
-        }}
-      >
-        <div className="col-span-4">{game && game.homeTeam}</div>
-        <div
-          className={`py-2 col-span-1 text-center ${homeScore > awayScore ? "bg-lime-700" : homeScore == awayScore ? "" : "bg-red-900"}`}
-        >
-          {game && homeScore}
-        </div>
-      </div>
-      <div
-        className={`font-sans h-12 text-xs text-left line-clamp-2 col-span-2 rounded-t-lg px-3 grid grid-cols-5 ${selectedTab == "away" ? "bg-gray-600" : "bg-gray-800 border-b-black border-b-2"} bg-gray-600 px-3 `}
-        onClick={() => {
-          setSelectedTab("away");
-          if (game) {
-            router.push(`/game/${game.id}/${game.awayTeamId}`);
-          }
-        }}
-      >
-        <div className="col-span-4">{game && game.awayTeam}</div>
-        <div
-          className={`py-2 col-span-1 text-center ${homeScore < awayScore ? "bg-lime-700" : homeScore == awayScore ? "" : "bg-red-900"}`}
-        >
-          {game && awayScore}
-        </div>
-      </div>
-    </div>
+    <Tabs
+      tabs={tabs}
+      defaultTab="overview"
+      onChange={(val) => setSelectedTab(val)}
+    />
   );
 }

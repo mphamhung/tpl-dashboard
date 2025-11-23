@@ -64,7 +64,7 @@ export async function getGames(leagueId = null) {
   const keys = ["gameId", "teamId"];
   return tidy(
     data,
-    filter((d) => d.leagueId === leagueId),
+    filter((d) => (leagueId != null ? d.leagueId === leagueId : true)),
     groupBy(keys, [summarize({ score: sum("goals") })]),
     groupBy("gameId", [
       summarize({

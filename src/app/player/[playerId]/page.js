@@ -150,27 +150,6 @@ export default async function Page({ params }) {
           TUC profile
         </a>
       </div>
-      {/* <StatRadar
-        rows={[summaries]}
-        keys={[
-          "weighted_goals_pg",
-          "weighted_assists_pg",
-          "weighted_second_assists_pg",
-          "weighted_blocks_pg",
-          "weighted_throwaways_pg",
-          "weighted_drops_pg",
-          "weighted_other_passes_pg",
-        ]}
-        labels={[
-          "goals pg",
-          "assists pg",
-          "second_assists pg",
-          "blocks pg",
-          "throwaways pg",
-          "drops pg",
-          "other_passes pg",
-        ]}
-      /> */}
       <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"g pg"} />
       <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"a pg"} />
       <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"2a pg"} />

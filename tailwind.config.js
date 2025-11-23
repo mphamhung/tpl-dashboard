@@ -13,6 +13,16 @@ module.exports = {
       xl: "1440px",
     },
     extend: {
+      colors: {
+        tab: {
+          default: "#374151", // gray-700
+          selected: "#4B5563", // gray-600
+        },
+        score: {
+          winner: "#4d7c0f", // lime-700
+          loser: "#7f1d1d", // red-900
+        },
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

@@ -12,15 +12,17 @@ export default async function PlayerPageLayout({ children, params }) {
   const player = await getPlayer(params.playerId);
 
   return (
-    <>
-      <PlayerPageTabs
-        playerName={player.playerName}
-        playerId={params.playerId}
-        leagueIds={leagueIds}
-      />
-      <div className="rounded-b-lg  bg-gray-600 p-2 overflow-scroll max-h-screen">
+    <div className="rounded-b-lg  bg-gray-600">
+      <div className="sticky top-0 bg-gray-600">
+        <PlayerPageTabs
+          playerName={player.playerName}
+          playerId={params.playerId}
+          leagueIds={leagueIds}
+        />
+      </div>
+      <div className="flex-1 rounded-b-lg bg-gray-600">
         <Suspense>{children}</Suspense>
       </div>
-    </>
+    </div>
   );
 }
