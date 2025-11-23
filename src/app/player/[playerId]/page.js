@@ -12,8 +12,16 @@ import {
 import { getPlayerRows } from "@/lib/api";
 import { PieChart } from "@/components/PieChart";
 import { useEffect, useState } from "react";
-import { LinePlot, ScatterPlot } from "@/components/Contributions";
+import { LinePlot, StatRadar } from "@/components/Contributions";
 
+function weightedStat(items, stat) {
+  const totalWeight = items.reduce((acc, d) => acc + d.leagueWeight, 0);
+  const weightedSum = items.reduce(
+    (acc, d) => acc + d[stat] * d.leagueWeight,
+    0
+  );
+  return weightedSum / totalWeight;
+}
 export default async function Page({ params }) {
   const [summaries, setSummaries] = useState([]);
   const [lifetimeStats, setLifeTimeStats] = useState([]);
@@ -37,6 +45,16 @@ export default async function Page({ params }) {
               drops: sum("drops"),
               other_passes: sum("other_passes"),
               games_played: nDistinct("gameId"),
+              weighted_goals_pg: (items) => weightedStat(items, "goals"),
+              weighted_assists_pg: (items) => weightedStat(items, "assists"),
+              weighted_second_assists_pg: (items) =>
+                weightedStat(items, "second_assists"),
+              weighted_blocks_pg: (items) => weightedStat(items, "blocks"),
+              weighted_throwaways_pg: (items) =>
+                weightedStat(items, "throwaways"),
+              weighted_drops_pg: (items) => weightedStat(items, "drops"),
+              weighted_other_passes_pg: (items) =>
+                weightedStat(items, "other_passes"),
             }),
           ]
         ),
@@ -46,6 +64,7 @@ export default async function Page({ params }) {
           "game negatives": (d) => d["throwaways"] + d["drops"],
         })
       )[0];
+      console.log(summaries);
       setSummaries(summaries);
 
       const stats = tidy(
@@ -93,7 +112,7 @@ export default async function Page({ params }) {
             (d["other_passes"] / d["games_played"]).toFixed(2),
         })
       );
-      console.log(stats);
+      // console.log(stats);
       setLifeTimeStats(stats);
       setLoading(1);
     };
@@ -131,6 +150,27 @@ export default async function Page({ params }) {
           TUC profile
         </a>
       </div>
+      {/* <StatRadar
+        rows={[summaries]}
+        keys={[
+          "weighted_goals_pg",
+          "weighted_assists_pg",
+          "weighted_second_assists_pg",
+          "weighted_blocks_pg",
+          "weighted_throwaways_pg",
+          "weighted_drops_pg",
+          "weighted_other_passes_pg",
+        ]}
+        labels={[
+          "goals pg",
+          "assists pg",
+          "second_assists pg",
+          "blocks pg",
+          "throwaways pg",
+          "drops pg",
+          "other_passes pg",
+        ]}
+      /> */}
       <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"g pg"} />
       <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"a pg"} />
       <LinePlot rows={lifetimeStats} x_key={"leagueId"} y_key={"2a pg"} />

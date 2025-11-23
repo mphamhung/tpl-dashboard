@@ -20,7 +20,18 @@ import {
 export async function loadSummaryStats() {
   const res = await fetch(summary_stats_raw, { cache: "no-cache" });
   const text = await res.text();
-  const result = tidy(JSON.parse(text));
+  let result = tidy(JSON.parse(text));
+
+  const maxLeagueId = result
+    .map((d) => Number(d.leagueId))
+    .reduce((a, b) => Math.max(a, b));
+  console.log(maxLeagueId);
+  result = tidy(
+    result,
+    mutate({
+      leagueWeight: (d) => 1 / (1 + 0.05 * (maxLeagueId - Number(d.leagueId))),
+    })
+  );
   return result;
 }
 export async function loadGameInfo() {
@@ -82,11 +93,6 @@ export async function getGameEvents(gameId, teamId) {
 
   const fetchedData = await res.json();
   return fetchedData;
-}
-
-export async function getScore(gameId, teamId) {
-  const teamEvents = await getGameEvents(gameId, teamId);
-  return teamEvents.filter((event) => event.eventType == "Goal").length;
 }
 
 const EVENT_MAPPING = {
@@ -157,70 +163,6 @@ function preprocess(game_rows) {
   return [rows, graph];
 }
 
-export async function getRowsFromEvents(events) {
-  const stats_summary = {};
-  for (const event of events) {
-    if (!(event.gameId in stats_summary)) {
-      stats_summary[event.gameId] = {};
-    }
-    if (!(event.player.id in stats_summary[event.gameId])) {
-      stats_summary[event.gameId][event.player.id] = {
-        name: event.player.playerName,
-        gameId: event.gameId,
-        playerId: event.player.id,
-        teamId: event.teamId,
-        goals: 0,
-        assists: 0,
-        second_assists: 0,
-        blocks: 0,
-        throwaways: 0,
-        drops: 0,
-        other_passes: 0,
-      };
-    }
-    stats_summary[event.gameId][event.player.id][
-      EVENT_MAPPING[event.eventType]
-    ] += 1;
-  }
-
-  const data = [];
-  Object.keys(stats_summary).map((gameId) => {
-    Object.keys(stats_summary[gameId]).map((playerId) => {
-      data.push(stats_summary[gameId][playerId]);
-    });
-  });
-
-  let [rows, graph] = preprocess(data);
-
-  let games = await getGames();
-  const gameIds = rows.map((row) => row.gameId);
-  games = games.filter((game) => gameIds.includes(game.id));
-  const mapping = new Map(
-    games.map((game) => {
-      return [String(game.id), game];
-    })
-  );
-  rows = tidy(
-    rows,
-    mutate({
-      team: (d) =>
-        d["teamId"] == mapping.get(d["gameId"]).awayTeamId
-          ? mapping.get(d["gameId"]).awayTeam
-          : mapping.get(d["gameId"]).homeTeam,
-      date: (d) => new Date(mapping.get(d["gameId"]).date),
-      game_time: (d) =>
-        mapping.get(d["gameId"]).time.includes("PM")
-          ? Number(mapping.get(d["gameId"]).time.split("-")[0].split(":")[0]) +
-            "pm"
-          : Number(mapping.get(d["gameId"]).time.split("-")[0].split(":")[0]) -
-            12 +
-            "pm",
-    })
-  );
-  rows.reverse();
-  return [rows, graph];
-}
-
 export async function getGameRows(gameId, teamId) {
   const game_data = await loadSummaryStats();
   const game_rows = tidy(
@@ -286,21 +228,4 @@ export async function getPlayer(playerId) {
     (response) => response.json()
   );
   return player;
-}
-
-export async function getPlayerEvents(playerId, leagueId) {
-  const events = await getAllGameEvents(leagueId);
-  return events.filter((event) => String(event.player.id) === String(playerId));
-}
-
-export async function PlayerLeagues(playerId) {
-  const all_teams = await fetch(serverUrl + "teams", {
-    cache: use_cache ? "default" : "no-store", // Use cache if not Wednesday
-  }).then((response) => response.json());
-
-  const leagueIds = all_teams
-    .filter((team) => team.players.some((player) => player.id === playerId))
-    .map((team) => team.leagueId);
-
-  return leagueIds;
 }
