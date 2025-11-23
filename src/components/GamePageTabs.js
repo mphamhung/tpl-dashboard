@@ -1,6 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
-import { getGamesMetadata, getGameEvents } from "@/lib/api-fetching";
+import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Tabs from "./Tabs"; // import the reusable Tabs component
 
@@ -23,7 +22,7 @@ export function GamePageTabs({ game, homeScore, awayScore }) {
               homeScore > awayScore
                 ? "bg-score-winner"
                 : homeScore === awayScore
-                  ? ""
+                  ? "bg-score-tie"
                   : "bg-score-loser"
             }`}
           >
@@ -43,7 +42,7 @@ export function GamePageTabs({ game, homeScore, awayScore }) {
               awayScore > homeScore
                 ? "bg-score-winner"
                 : homeScore === awayScore
-                  ? ""
+                  ? "bg-score-tie"
                   : "bg-score-loser"
             }`}
           >

@@ -21,6 +21,7 @@ module.exports = {
         score: {
           winner: "#4d7c0f", // lime-700
           loser: "#7f1d1d", // red-900
+          tie: "9ca3af", // bg-gray-400
         },
       },
       backgroundImage: {

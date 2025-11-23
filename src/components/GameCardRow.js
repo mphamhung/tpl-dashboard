@@ -5,8 +5,8 @@ import { useState, useEffect } from "react";
 
 export function Score({ score, is_winner }) {
   const color_map = {
-    win: "bg-lime-700",
-    loss: "bg-red-500",
+    win: "bg-score-winner",
+    loss: "bg-score-loser",
     tie: "bg-gray-400",
   };
 
